@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-
+from .keys import auth_keys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
+    'sslserver',
     'profiles',
 ]
 
@@ -77,7 +78,7 @@ AUTHENTICATION_BACKENDS = (
  'social_core.backends.open_id.OpenIdAuth',  # for Google authentication
  'social_core.backends.google.GoogleOpenId',  # for Google authentication
  'social_core.backends.google.GoogleOAuth2',  # for Google authentication
- 
+ 'social_core.backends.facebook.FacebookOAuth2',
  'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -133,5 +134,8 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='480332363851-vokobr1q5ui4uusso1160t38lus8s0n6.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'myqYwuoMOEFk_E7Md4zonrjC'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = auth_keys['google_key']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = auth_keys['google_secret']
+
+SOCIAL_AUTH_FACEBOOK_KEY = auth_keys['fb_key']  
+SOCIAL_AUTH_FACEBOOK_SECRET = auth_keys['fb_secret']
