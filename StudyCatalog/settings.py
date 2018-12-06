@@ -131,8 +131,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/post'
+LOGIN_REDIRECT_URL = '/post'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = auth_keys['google_key']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = auth_keys['google_secret']

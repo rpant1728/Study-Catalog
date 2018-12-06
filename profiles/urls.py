@@ -7,4 +7,5 @@ urlpatterns = [
     url('', include('django.contrib.auth.urls')) ,
     url(r'^auth/', include('social_django.urls', namespace='social')),  # <- Here
     url(r'^$', views.home, name='home'),
+    url(r'^post/', views.post_new, name='post_new'),
 ]
