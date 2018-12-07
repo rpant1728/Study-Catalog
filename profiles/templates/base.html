@@ -1,4 +1,5 @@
 {% block content %}
+
 	{% if profile %}
 		<a href="{% url 'post_new' %}">Back</a>
 		{% for p in posts %}
@@ -7,7 +8,7 @@
 				Written by <h3>{{p.author}}</h3> on {{p.created_on}}
 				<h6>{{p.content}}</h6> 
 				{% if user.is_authenticated %}
-					<form action="comment/" method="POST" enctype="multipart/form-data">
+					<form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
 						<div class="form-group">
 						{% csrf_token %}
 						<label for="comment">Add a comment</label>
@@ -26,6 +27,15 @@
 					<h3>{{comment.content}}</h3>
 					Written by {{comment.author}} on {{comment.created_on}}
 				{% endfor %}
+				<h4>{{ p.upvote_count }}</h4>
+				{% if user not in p.upvote.all %}
+					<form method='POST' action="{% url 'post_upvote' %}">
+						{% csrf_token %}
+						<input type="hidden" name="page" value="profile"/>
+						<input type="hidden" name="post_id" value="{{p.id}}"/>
+						<input type="submit" value="Upvote" class="btn btn-lg btn-primary" id="upvote"/></div>
+					</form>
+				{% endif %}
 				<hr>
 			{% endifequal %}
 		{% endfor %}
@@ -60,6 +70,17 @@
 				<h3>{{comment.content}}</h3>
 				Written by {{comment.author}} on {{comment.created_on}}
 			{% endfor %}
+			<h4>{{ p.upvote_count }}</h4>
+			{% if user.is_authenticated %}
+				{% if user not in p.upvote.all %}
+					<form method='POST' action="{% url 'post_upvote' %}">
+						{% csrf_token %}
+						<input type="hidden" name="page" value="post_new"/>
+						<input type="hidden" name="post_id" value="{{p.id}}"/>
+						<input type="submit" value="Upvote" class="btn btn-lg btn-primary" id="upvote"/></div>
+					</form>
+				{% endif %}
+			{% endif %}
 			<hr>
 		{% endfor %}
 		{% if user.is_authenticated %}

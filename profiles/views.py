@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
 from profiles.models import Post
@@ -22,6 +22,7 @@ def post_new(request):
 			post.author = request.user
 			post.created_on = timezone.now()
 			post.content = form.cleaned_data['data']
+			post.upvote_count = 0
 			post.save()
 			template_data['post_form'] = form
 			return render(request, 'base.html', template_data)
@@ -61,4 +62,17 @@ def comment_new(request):
 def profile_view(request):
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts, 'profile': True}
+	return render(request, 'base.html', template_data)
+
+def upvote(request):
+	if request.method == "POST":
+		post_id = request.POST['post_id']
+		page = request.POST['page']
+		post = Post.objects.get(id=post_id)
+		post.upvote.add(request.user)
+		post.upvote_count = post.upvote_count + 1
+		post.save()
+		return redirect(page)
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
 	return render(request, 'base.html', template_data)

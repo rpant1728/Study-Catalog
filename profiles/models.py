@@ -8,6 +8,8 @@ class Post(models.Model):
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, related_name='author',on_delete=models.CASCADE)
+    upvote = models.ManyToManyField(User, related_name='upvotes')
+    upvote_count = models.IntegerField(default = 0)
     def __str__(self):
         return "%s (%s)" % (self.title, self.author.username)
 
