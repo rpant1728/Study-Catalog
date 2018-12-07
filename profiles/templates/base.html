@@ -27,13 +27,19 @@
 					<h3>{{comment.content}}</h3>
 					Written by {{comment.author}} on {{comment.created_on}}
 				{% endfor %}
-				<h4>{{ p.upvote_count }}</h4>
-				{% if user not in p.upvote.all %}
+				<h4>{{ p.vote_count }}</h4>
+				{% if user not in p.vote.all %}
 					<form method='POST' action="{% url 'post_upvote' %}">
 						{% csrf_token %}
 						<input type="hidden" name="page" value="profile"/>
 						<input type="hidden" name="post_id" value="{{p.id}}"/>
 						<input type="submit" value="Upvote" class="btn btn-lg btn-primary" id="upvote"/></div>
+					</form>
+					<form method='POST' action="{% url 'post_downvote' %}">
+						{% csrf_token %}
+						<input type="hidden" name="page" value="profile"/>
+						<input type="hidden" name="post_id" value="{{p.id}}"/>
+						<input type="submit" value="Downvote" class="btn btn-lg btn-primary" id="downvote"/></div>
 					</form>
 				{% endif %}
 				<hr>
@@ -70,14 +76,20 @@
 				<h3>{{comment.content}}</h3>
 				Written by {{comment.author}} on {{comment.created_on}}
 			{% endfor %}
-			<h4>{{ p.upvote_count }}</h4>
+			<h4>{{ p.vote_count }}</h4>
 			{% if user.is_authenticated %}
-				{% if user not in p.upvote.all %}
+				{% if user not in p.vote.all %}
 					<form method='POST' action="{% url 'post_upvote' %}">
 						{% csrf_token %}
 						<input type="hidden" name="page" value="post_new"/>
 						<input type="hidden" name="post_id" value="{{p.id}}"/>
 						<input type="submit" value="Upvote" class="btn btn-lg btn-primary" id="upvote"/></div>
+					</form>
+					<form method='POST' action="{% url 'post_downvote' %}">
+						{% csrf_token %}
+						<input type="hidden" name="page" value="post_new"/>
+						<input type="hidden" name="post_id" value="{{p.id}}"/>
+						<input type="submit" value="Downvote" class="btn btn-lg btn-primary" id="downvote"/></div>
 					</form>
 				{% endif %}
 			{% endif %}

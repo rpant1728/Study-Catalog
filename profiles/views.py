@@ -69,8 +69,21 @@ def upvote(request):
 		post_id = request.POST['post_id']
 		page = request.POST['page']
 		post = Post.objects.get(id=post_id)
-		post.upvote.add(request.user)
-		post.upvote_count = post.upvote_count + 1
+		post.vote.add(request.user)
+		post.vote_count = post.vote_count + 1
+		post.save()
+		return redirect(page)
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
+	return render(request, 'base.html', template_data)
+
+def downvote(request):
+	if request.method == "POST":
+		post_id = request.POST['post_id']
+		page = request.POST['page']
+		post = Post.objects.get(id=post_id)
+		post.vote.add(request.user)
+		post.vote_count = post.vote_count - 1
 		post.save()
 		return redirect(page)
 	all_posts = Post.objects.all()
