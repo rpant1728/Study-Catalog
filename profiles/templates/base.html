@@ -1,6 +1,6 @@
 {% block content %}
 	{% if profile %}
-		<a href="{% url 'home' %}">Back</a>
+		<a href="{% url 'post_new' %}">Back</a>
 		{% for p in posts %}
 			{% ifequal user p.author %}
 				<h3>{{p.title}}</h3>
@@ -41,7 +41,7 @@
 			Written by <h3>{{p.author}}</h3> on {{p.created_on}}
 			<h6>{{p.content}}</h6> 
 			{% if user.is_authenticated %}
-				<form action="comment/" method="POST" enctype="multipart/form-data">
+				<form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
 					<div class="form-group">
 					{% csrf_token %}
 					<label for="comment">Add a comment</label>
@@ -63,7 +63,7 @@
 			<hr>
 		{% endfor %}
 		{% if user.is_authenticated %}
-			<form action="" method="POST" enctype="multipart/form-data">
+			<form action="{% url 'post_new' %}" method="POST" enctype="multipart/form-data">
 				<div class="form-group">
 				{% csrf_token %}
 				{% for field in post_form %}
