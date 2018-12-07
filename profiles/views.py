@@ -1,7 +1,10 @@
 from django.shortcuts import render, render_to_response
+from django.contrib.auth.models import User
 from django.utils import timezone
 from profiles.models import Post
 from profiles.forms import PostForm
+from profiles.models import Comment
+from profiles.forms import CommentForm
 
 def home(request):
 	all_posts = Post.objects.all()
@@ -20,12 +23,42 @@ def post_new(request):
 			post.created_on = timezone.now()
 			post.content = form.cleaned_data['data']
 			post.save()
-			template_data['form'] = form
+			template_data['post_form'] = form
 			return render(request, 'base.html', template_data)
 		else:
 			form = PostForm()	
-			template_data['form'] = form
+			template_data['post_form'] = form
 	else:
 		form = PostForm()
-		template_data['form'] = form
+		template_data['post_form'] = form
+	return render(request, 'base.html', template_data)
+
+def comment_new(request):
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
+	post_form = PostForm()
+	template_data['post_form'] = post_form
+	if request.method == "POST":
+		comment_form = CommentForm(request.POST)
+		if comment_form.is_valid():
+			print(comment_form.cleaned_data)
+			comment = Comment()
+			comment.post = Post.objects.get(id=comment_form.cleaned_data.get('post_id'))
+			comment.author = request.user
+			comment.created_on = timezone.now()
+			comment.content = comment_form.cleaned_data['data']
+			comment.save()
+			template_data['comment_form'] = comment_form
+			return render(request, 'base.html', template_data)
+		else:
+			comment_form = CommentForm()	
+			template_data['comment_form'] = comment_form
+	else:
+		comment_form = CommentForm()
+		template_data['comment_form'] = comment_form
+	return render(request, 'base.html', template_data)
+
+def profile_view(request):
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts, 'profile': True}
 	return render(request, 'base.html', template_data)
