@@ -1,10 +1,12 @@
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
-from profiles.models import Post
-from profiles.forms import PostForm
-from profiles.models import Comment
-from profiles.forms import CommentForm
+from profiles.models import Post, Comment, Profile
+from profiles.forms import PostForm, CommentForm, ProfileForm
+from django.views import generic
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+
 
 def home(request):
 	all_posts = Post.objects.all()
@@ -59,9 +61,11 @@ def comment_new(request):
 		template_data['comment_form'] = comment_form
 	return render(request, 'base.html', template_data)
 
-def profile_view(request):
-	all_posts = Post.objects.all()
-	template_data = {'posts' : all_posts, 'profile': True}
+def user_posts(request, pk):
+	user = User()
+	user = User.objects.get(id=pk)
+	posts = Post.objects.filter(author=user)
+	template_data = {'posts' : posts, 'profile': True}
 	return render(request, 'base.html', template_data)
 
 def upvote(request):
@@ -89,3 +93,21 @@ def downvote(request):
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'base.html', template_data)
+
+def profile_detail(request, pk):
+	profile = Profile.objects.filter(user_id=pk)
+	if profile.count() == 0:
+		return HttpResponseRedirect(reverse("edit-profile"))
+	return render(request, 'profiles/profile_detail.html', context={'profile': profile[0]})    
+
+def edit_profile(request):
+	user = request.user
+	profile = Profile(user_id=user.id)
+	if request.method == "POST":
+		form = ProfileForm(request.POST, request.FILES, instance=profile)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse("profile-detail", args=(user.id,)))
+	else:
+		form = ProfileForm()
+	return render(request, 'profile_form.html', context={'form': form})

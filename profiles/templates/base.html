@@ -1,7 +1,7 @@
 {% block content %}
 
 	{% if profile %}
-		<a href="{% url 'post_new' %}">Back</a>
+		<a href="{% url 'profile-detail' user.id %}">Back</a>
 		{% for p in posts %}
 			{% ifequal user p.author %}
 				<h3>{{p.title}}</h3>
@@ -27,8 +27,8 @@
 					<h3>{{comment.content}}</h3>
 					Written by {{comment.author}} on {{comment.created_on}}
 				{% endfor %}
-				<h4>{{ p.vote_count }}</h4>
-				{% if user not in p.vote.all %}
+				<h4>{{ p.upvote_count }}</h4>
+				{% if user not in p.upvote.all %}
 					<form method='POST' action="{% url 'post_upvote' %}">
 						{% csrf_token %}
 						<input type="hidden" name="page" value="profile"/>
@@ -47,8 +47,8 @@
 		{% endfor %}
 	{% else %}
 		{% if user.is_authenticated %}
-			<p class="display-4">Hello, {{ user.username }}</p>
-			<a href="{% url 'profile' %}">My profile</a>
+			<p class="display-4">Hello, {{ user.username }} </p>
+			<a href="{% url 'profile-detail' user.id %}">My profile</a>
 		{% else %}
 			<a class="lead" href="{% url 'login' %}">Log in</a>
 		{% endif %}
@@ -76,9 +76,9 @@
 				<h3>{{comment.content}}</h3>
 				Written by {{comment.author}} on {{comment.created_on}}
 			{% endfor %}
-			<h4>{{ p.vote_count }}</h4>
+			<h4>{{ p.upvote_count }}</h4>
 			{% if user.is_authenticated %}
-				{% if user not in p.vote.all %}
+				{% if user not in p.upvote.all %}
 					<form method='POST' action="{% url 'post_upvote' %}">
 						{% csrf_token %}
 						<input type="hidden" name="page" value="post_new"/>

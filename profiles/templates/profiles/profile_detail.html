@@ -1,0 +1,12 @@
+{% block content %}
+    <a href="{% url 'post_new' %}">Back</a>
+    <img src="{{ profile.profile_picture.url }}">
+    <p>Name - {{ profile.first_name }} {{ profile.last_name }}</p>
+    <p>Description - {{ profile.description }}</p>
+    <p>Degree - {{ profile.degree }}</p>
+    <p>Department - {{ profile.department }}</p>
+    <p>Age - {{ profile.age }}</p>
+    <p>City - {{ profile.city }}</p> 
+    <a href="{% url 'user_posts' user.id %}">My posts</a>
+{% endblock %}
+
