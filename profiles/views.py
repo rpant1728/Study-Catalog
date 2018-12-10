@@ -13,8 +13,8 @@ def home(request):
 	return render(request, 'home.html', template_data)
 
 def post_new(request):
-	all_posts = Post.objects.all()
-	template_data = {'posts' : all_posts}
+	# all_posts = Post.objects.all()
+	template_data = dict()
 	if request.method == "POST":
 		# form = PostForm(request.POST)
 		# if form.is_valid():
@@ -25,11 +25,12 @@ def post_new(request):
 		post.content = request.POST['data']
 		post.upvote_count = 0
 		post.save()
+		template_data['post'] = post
 		# template_data['post_form'] = form
 		# else:
 		# 	form = PostForm()	
 		# 	template_data['post_form'] = form
-	return render(request, 'home.html', template_data)
+	return render(request, 'post.html', template_data)
 
 def comment_new(request):
 	all_posts = Post.objects.all()
@@ -101,3 +102,8 @@ def post_detail(request, pk):
 	if post.count() == 0:
 		return HttpResponseRedirect(reverse("post_new"))
 	return render(request, 'post/post_detail.html', context={'post': post[0]}) 
+
+def update_posts(request):
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
+	return render(request, 'post.html', template_data)

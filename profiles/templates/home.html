@@ -54,8 +54,8 @@
                 'title': title,
                 'data': data
             },
-            success: function(){
-                alert("Posted successfully!")
+            success: function(result){
+                $('.posts').html('').load("{% url 'update_posts' %}");
             }
         });
         return false;
@@ -163,90 +163,9 @@
                     </div>
                 {% endif %}
                 <br><br>
-
-                {% for post in posts %}
-                    <div class="card gedf-card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="mr-2">
-                                        {% if post.author.profile.all.count == 0 %}
-                                            <img class="rounded-circle" width="45" src="{% static 'images/default.png' %}"/>
-                                        {% else %}
-                                            {% for profile in post.author.profile.all %}
-                                                <img class="rounded-circle" width="45" src="{{profile.profile_picture.url}}">     
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
-                                    <div class="ml-2">
-                                        <div class="h5 m-0">{{ post.author.username }}</div>
-                                        {% if post.author..profile.all.count != 0 %}
-                                            {% for profile in post.author.profile.all %}
-                                                <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-h"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
-                                            <div class="h6 dropdown-header">Configuration</div>
-                                            <a class="dropdown-item" href="#">Save</a>
-                                            <a class="dropdown-item" href="#">Hide</a>
-                                            <a class="dropdown-item" href="#">Report</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.created_on }}</div>
-                            <a class="card-link" href="#">
-                                <h5 class="card-title">{{ post.title }}</h5>
-                            </a>
-                            <p class="card-text">
-                                {{ post.content }}
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="#" class="upvote" id="upvote-{{post.id}}"><i class="fas fa-arrow-up"></i></a>
-                            <a href="#" class="downvote" id="downvote-{{post.id}}"><i class="fas fa-arrow-down"></i></a>
-                            <span id="votes-{{post.id}}" style="padding-right: 20px; padding-left: 5px;">{{ post.vote_count }}</span>
-                            <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
-                            <a href="#" class="card-link"><i class="fa fa-mail-forward"></i> Share</a>
-                        </div>
-                    </div>
-                    <br>
-                    {% for comment in post.comments.all %}
-                        <div class="row">
-                            <div class="col-sm-auto">
-                                <div class="thumbnail">
-                                    {% if comment.author.profile.all.count == 0 %}
-                                        <img class="img-responsive user-photo" height="75px" width="75px" src="{% static 'images/default.png' %}"/>
-                                    {% else %}
-                                        {% for profile in comment.author.profile.all %}
-                                            <img class="img-responsive user-photo" src="{{profile.profile_picture.url}}">     
-                                        {% endfor %}
-                                    {% endif %}
-                                </div> 
-                            </div> 
-                            <div class="col">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <strong>{{comment.author}}</strong> <span class="text-muted">commented on {{comment.created_on}}</span>
-                                    </div>
-                                    <div class="panel-body">
-                                        {{comment.content}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                    {% endfor %}
-                {% endfor %}
+                <div class="posts">
+                    {% include "post.html" with posts=posts %}
+                </div>
             </div>
 
             <div class="col-md-3">
