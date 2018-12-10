@@ -14,4 +14,4 @@ class CommentForm(forms.Form):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ['user_id']
+        exclude = ['user']

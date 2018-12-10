@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load static %}
+    <script type="text/javascript">
+        jQuery(document).on('click', ".upvote", function(){
+        var $this = $(this);
+        var id = $this.attr('id').split('-')[1];
+        $.ajax({
+            type:"POST",
+            url: "{% url 'post_votes' %}",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'post_id': id,
+                'upvote': "1"
+            },
+            success: function(){
+                var votes = "" + (Number($("#votes-"+id).text())+1); 
+                $("#votes-"+id).text(votes);
+            }
+        });
+        return false;
+    });        
+    </script>
+    <script type="text/javascript">
+        jQuery(document).on('click', ".downvote", function(){
+        var $this = $(this);
+        var id = $this.attr('id').split('-')[1];
+        $.ajax({
+            type:"POST",
+            url: "{% url 'post_votes' %}",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'post_id': id,
+                'upvote': "0"
+            },
+            success: function(){
+                var votes = "" + (Number($("#votes-"+id).text())-1); 
+                $("#votes-"+id).text(votes);
+            }
+        });
+        return false;
+    });        
+    </script>
+    <script type="text/javascript">
+        jQuery(document).on('click', "#post", function(){
+        var title = $('#title').val();
+        var data = $('#data').val();
+        $.ajax({
+            type:"POST",
+            url: "{% url 'post_new' %}",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'title': title,
+                'data': data
+            },
+            success: function(){
+                alert("Posted successfully!")
+            }
+        });
+        return false;
+    });
+    </script>
+    <div class="container-fluid gedf-wrapper">
+        <div class="row">
+            <div class="col-md-3">
+                {% if user.is_authenticated %}
+                    {% if user.profile.all.count != 0 %}
+                        {% for profile in user.profile.all %}
+                            <div class="card">
+                                <div class="card-body">
+                                    <img class="img-responsive user-photo" height=150px width=150px src="{{profile.profile_picture.url}}">  
+                                    <div class="h5">{{ profile.username }}</div>
+                                    <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
+                                    <div class="h7">{{ profile.description }}</div>
+                                    <a href="{% url 'profile-detail' user.id %}">My profile</a>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <div class="h6 text-muted">Followers</div>
+                                        <div class="h5">5.2342</div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="h6 text-muted">Following</div>
+                                        <div class="h5">6758</div>
+                                    </li>
+                                    <li class="list-group-item">Vestibulum at eros</li>
+                                </ul>
+                            </div>   
+                        {% endfor %}
+                        {% else %}
+                            <a class="lead" href="{% url 'edit-profile' %}">Create Profile</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 gedf-main">
+                {% if user.is_authenticated and not profile %}
+                    <div class="card gedf-card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Make
+                                        a publication</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="images-tab" data-toggle="tab" role="tab" aria-controls="images" aria-selected="false" href="#images">Images</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                    <form action="{% url 'post_new' %}" method="POST" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            {% csrf_token %}
+                                            <label class="sr-only" for="message">post</label>
+                                            <textarea class="form-control" id="title" rows="1" name="title" placeholder="What are you thinking?"></textarea>
+                                            <br>
+                                            <textarea class="form-control" id="data" rows="3" name="data" placeholder="What are you thinking?"></textarea>
+                                        </div>
+                                        <div class="btn-toolbar justify-content-between">
+                                            <div class="btn-group">
+                                                <button type="submit" class="btn btn-primary" id="post">Post</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
+                                    <form action="{% url 'post_new' %}" method="POST" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="customFile">
+                                                <label class="custom-file-label" for="customFile">Upload image</label>
+                                            </div>
+                                        </div>
+                                        <div class="btn-toolbar justify-content-between">
+                                            <div class="btn-group">
+                                                <button type="submit" class="btn btn-primary">Post</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="py-4"></div>
+                                </div>
+                            </div>
+                            <!-- <div class="btn-toolbar justify-content-between">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">share</button>
+                                </div>
+                                <div class="btn-group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fa fa-globe"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                                        <a class="dropdown-item" href="#"><i class="fa fa-globe"></i> Public</a>
+                                        <a class="dropdown-item" href="#"><i class="fa fa-users"></i> Friends</a>
+                                        <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Just me</a>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                {% endif %}
+                <br><br>
+
+                {% for post in posts %}
+                    <div class="card gedf-card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="mr-2">
+                                        {% if post.author.profile.all.count == 0 %}
+                                            <img class="rounded-circle" width="45" src="{% static 'images/default.png' %}"/>
+                                        {% else %}
+                                            {% for profile in post.author.profile.all %}
+                                                <img class="rounded-circle" width="45" src="{{profile.profile_picture.url}}">     
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-2">
+                                        <div class="h5 m-0">{{ post.author.username }}</div>
+                                        {% if post.author..profile.all.count != 0 %}
+                                            {% for profile in post.author.profile.all %}
+                                                <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                            <div class="h6 dropdown-header">Configuration</div>
+                                            <a class="dropdown-item" href="#">Save</a>
+                                            <a class="dropdown-item" href="#">Hide</a>
+                                            <a class="dropdown-item" href="#">Report</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.created_on }}</div>
+                            <a class="card-link" href="#">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                            </a>
+                            <p class="card-text">
+                                {{ post.content }}
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="upvote" id="upvote-{{post.id}}"><i class="fas fa-arrow-up"></i></a>
+                            <a href="#" class="downvote" id="downvote-{{post.id}}"><i class="fas fa-arrow-down"></i></a>
+                            <span id="votes-{{post.id}}" style="padding-right: 20px; padding-left: 5px;">{{ post.vote_count }}</span>
+                            <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
+                            <a href="#" class="card-link"><i class="fa fa-mail-forward"></i> Share</a>
+                        </div>
+                    </div>
+                    <br>
+                    {% for comment in post.comments.all %}
+                        <div class="row">
+                            <div class="col-sm-auto">
+                                <div class="thumbnail">
+                                    {% if comment.author.profile.all.count == 0 %}
+                                        <img class="img-responsive user-photo" height="75px" width="75px" src="{% static 'images/default.png' %}"/>
+                                    {% else %}
+                                        {% for profile in comment.author.profile.all %}
+                                            <img class="img-responsive user-photo" src="{{profile.profile_picture.url}}">     
+                                        {% endfor %}
+                                    {% endif %}
+                                </div> 
+                            </div> 
+                            <div class="col">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <strong>{{comment.author}}</strong> <span class="text-muted">commented on {{comment.created_on}}</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        {{comment.content}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <div class="col-md-3">
+                {% if user.is_authenticated %}
+                    <div class="card gedf-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                        </div>
+                    </div>
+                    <div class="card gedf-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock  %}

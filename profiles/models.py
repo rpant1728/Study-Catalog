@@ -52,10 +52,12 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to='images/profile_pictures',
                                         default="images/profile_pictures/default.png")
     city = models.CharField(max_length=255)
-    user_id = models.IntegerField()
+    user = models.ForeignKey(User, related_name='profile', on_delete=models.CASCADE, null=True)
 
     def get_absolute_url(self):
         return reverse('profile-detail', args=[str(self.id)])
 
     def __str__(self):
         return "%s %s" % (self.first_name, self.last_name)
+
+

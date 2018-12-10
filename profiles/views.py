@@ -7,34 +7,29 @@ from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-
 def home(request):
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
-	return render(request, 'base.html', template_data)
+	return render(request, 'home.html', template_data)
 
 def post_new(request):
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	if request.method == "POST":
-		form = PostForm(request.POST)
-		if form.is_valid():
-			post = Post()
-			post.title = form.cleaned_data['title']
-			post.author = request.user
-			post.created_on = timezone.now()
-			post.content = form.cleaned_data['data']
-			post.vote_count = 0
-			post.save()
-			template_data['post_form'] = form
-			return render(request, 'base.html', template_data)
-		else:
-			form = PostForm()	
-			template_data['post_form'] = form
-	else:
-		form = PostForm()
-		template_data['post_form'] = form
-	return render(request, 'base.html', template_data)
+		# form = PostForm(request.POST)
+		# if form.is_valid():
+		post = Post()
+		post.title = request.POST['title']
+		post.author = request.user
+		post.created_on = timezone.now()
+		post.content = request.POST['data']
+		post.upvote_count = 0
+		post.save()
+		# template_data['post_form'] = form
+		# else:
+		# 	form = PostForm()	
+		# 	template_data['post_form'] = form
+	return render(request, 'home.html', template_data)
 
 def comment_new(request):
 	all_posts = Post.objects.all()
@@ -66,39 +61,22 @@ def user_posts(request, pk):
 	user = User.objects.get(id=pk)
 	posts = Post.objects.filter(author=user)
 	template_data = {'posts' : posts, 'profile': True}
-	return render(request, 'base.html', template_data)
+	return render(request, 'home.html', template_data)
 
-def upvote(request):
+def post_votes(request):
 	if request.method == "POST":
 		post_id = request.POST['post_id']
-		page = request.POST['page']
+		upvote = request.POST['upvote']
 		post = Post.objects.get(id=post_id)
 		post.vote.add(request.user)
-		post.vote_count = post.vote_count + 1
+		if(upvote == "1"):
+			post.vote_count = post.vote_count + 1
+		elif(upvote == "0"):
+			post.vote_count = post.vote_count - 1
 		post.save()
-		if page == "user_posts":
-			return redirect(page, request.user.id)
-		else:
-			return redirect(page, post.id)
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
-	return render(request, 'base.html', template_data)
-
-def downvote(request):
-	if request.method == "POST":
-		post_id = request.POST['post_id']
-		page = request.POST['page']
-		post = Post.objects.get(id=post_id)
-		post.vote.add(request.user)
-		post.vote_count = post.vote_count - 1
-		post.save()
-		if page == "user_posts":
-			return redirect(page, request.user.id)
-		else:
-			return redirect(page, post.id)
-	all_posts = Post.objects.all()
-	template_data = {'posts' : all_posts}
-	return render(request, 'base.html', template_data)
+	return render(request, 'home.html', template_data)
 
 def profile_detail(request, pk):
 	profile = Profile.objects.filter(user_id=pk)
@@ -108,7 +86,7 @@ def profile_detail(request, pk):
 
 def edit_profile(request):
 	user = request.user
-	profile = Profile(user_id=user.id)
+	profile = Profile(user=user)
 	if request.method == "POST":
 		form = ProfileForm(request.POST, request.FILES, instance=profile)
 		if form.is_valid():
