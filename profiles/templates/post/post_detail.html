@@ -4,7 +4,41 @@
     <p>Title - {{post.title}}</p>
     <p>Content - {{post.content}}</p>
     <p>Written by - {{post.author}} on {{ post.created_on }}</p>
-    <p>{{post.vote_count}}</p>
+    {% if user.is_authenticated %}
+        <form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+            {% csrf_token %}
+            <label for="comment">Add a comment</label>
+            <input type="text" id="comment" name="data" placeholder="Enter comment"/>
+            <input type="hidden" name="post_id" value="{{post.id}}"/>
+            <div class="text-center">
+            <input type="submit" value="Submit" class="btn btn-lg btn-primary" id="submit"/></div>
+            </div>
+        </form>
+    {% endif %}
+    Comments :-
+    {% if not post.comments.all %}
+        No comments yet! <br>
+    {% endif %}
+    {% for comment in post.comments.all %}
+        <h3>{{comment.content}}</h3>
+        Written by {{comment.author}} on {{comment.created_on}}
+    {% endfor %}
+    <h4>{{ post.vote_count }}</h4>
+    {% if user not in post.vote.all %}
+        <form method='POST' action="{% url 'post_upvote' %}">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="post-detail"/>
+            <input type="hidden" name="post_id" value="{{post.id}}"/>
+            <input type="submit" value="Upvote" class="btn btn-lg btn-primary" id="upvote"/></div>
+        </form>
+        <form method='POST' action="{% url 'post_downvote' %}">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="post-detail"/>
+            <input type="hidden" name="post_id" value="{{post.id}}"/>
+            <input type="submit" value="Downvote" class="btn btn-lg btn-primary" id="downvote"/></div>
+        </form>
+    {% endif %}
     {% post_to_facebook post "Post to Facebook!" %}
     {% post_to_gplus post "Post to Google+!" %}
     {% send_email post.title "New Post: {{post.title}}. Check it out!" post "Share via email" %}

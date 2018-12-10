@@ -76,7 +76,10 @@ def upvote(request):
 		post.vote.add(request.user)
 		post.vote_count = post.vote_count + 1
 		post.save()
-		return redirect(page, request.user.id)
+		if page == "user_posts":
+			return redirect(page, request.user.id)
+		else:
+			return redirect(page, post.id)
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'base.html', template_data)
@@ -89,7 +92,10 @@ def downvote(request):
 		post.vote.add(request.user)
 		post.vote_count = post.vote_count - 1
 		post.save()
-		return redirect(page, request.user.id)
+		if page == "user_posts":
+			return redirect(page, request.user.id)
+		else:
+			return redirect(page, post.id)
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'base.html', template_data)
