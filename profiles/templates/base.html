@@ -4,7 +4,7 @@
 		<a href="{% url 'profile-detail' user.id %}">Back</a>
 		{% for p in posts %}
 			{% ifequal user p.author %}
-				<h3>{{p.title}}</h3>
+				<a href="{% url 'post-detail' p.id %}"><h3>{{p.title}}</h3></a>
 				Written by <h3>{{p.author}}</h3> on {{p.created_on}}
 				<h6>{{p.content}}</h6> 
 				{% if user.is_authenticated %}
@@ -53,7 +53,7 @@
 			<a class="lead" href="{% url 'login' %}">Log in</a>
 		{% endif %}
 		{% for p in posts %}
-			<h3>{{p.title}}</h3>
+			<a href="{% url 'post-detail' p.id %}"><h3>{{p.title}}</h3></a>
 			Written by <h3>{{p.author}}</h3> on {{p.created_on}}
 			<h6>{{p.content}}</h6> 
 			{% if user.is_authenticated %}

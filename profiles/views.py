@@ -24,7 +24,7 @@ def post_new(request):
 			post.author = request.user
 			post.created_on = timezone.now()
 			post.content = form.cleaned_data['data']
-			post.upvote_count = 0
+			post.vote_count = 0
 			post.save()
 			template_data['post_form'] = form
 			return render(request, 'base.html', template_data)
@@ -111,3 +111,9 @@ def edit_profile(request):
 	else:
 		form = ProfileForm()
 	return render(request, 'profile_form.html', context={'form': form})
+
+def post_detail(request, pk):
+	post = Post.objects.filter(pk=pk)
+	if post.count() == 0:
+		return HttpResponseRedirect(reverse("post_new"))
+	return render(request, 'post/post_detail.html', context={'post': post[0]}) 

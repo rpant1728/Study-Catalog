@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.urls import reverse
 from django.contrib.auth.models import User
 
 class Post(models.Model):
@@ -9,6 +10,10 @@ class Post(models.Model):
     author = models.ForeignKey(User, related_name='author',on_delete=models.CASCADE)
     vote = models.ManyToManyField(User, related_name='upvotes')
     vote_count = models.IntegerField(default = 0)
+    
+    def get_absolute_url(self):
+        return reverse('post-detail', args=[str(self.id)])
+
     def __str__(self):
         return "%s (%s)" % (self.title, self.author.username)
 

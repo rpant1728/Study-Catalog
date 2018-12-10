@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'social_django',
     'sslserver',
     'profiles',
+    'django_social_share',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'django.template.context_processors.request',
+                
             ],
         },
     },

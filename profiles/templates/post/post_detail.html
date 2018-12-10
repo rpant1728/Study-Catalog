@@ -1,0 +1,12 @@
+{% block content %}
+{% load social_share %}
+    <a href="{% url 'post_new' %}">Back</a>
+    <p>Title - {{post.title}}</p>
+    <p>Content - {{post.content}}</p>
+    <p>Written by - {{post.author}} on {{ post.created_on }}</p>
+    <p>{{post.vote_count}}</p>
+    {% post_to_facebook post "Post to Facebook!" %}
+    {% post_to_gplus post "Post to Google+!" %}
+    {% send_email post.title "New Post: {{post.title}}. Check it out!" post "Share via email" %}
+{% endblock %}
+
