@@ -114,3 +114,4 @@ def update_posts(request):
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'post.html', template_data)
+	

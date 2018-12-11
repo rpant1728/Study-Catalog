@@ -56,6 +56,7 @@
             </div>
         </div>
         <br>
+        <div id="comments-{{post.id}}">
         {% for comment in post.comments.all %}
             <div class="row">
                 <div class="col-sm-auto">
@@ -82,19 +83,18 @@
             </div>
             <br>
         {% endfor %}
-        <div id="comments">
-            <form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    {% csrf_token %}
-                    <input type="hidden" name="post-id" id="post-id" value="{{post.id}}">
-                    <textarea class="form-control" id="data" rows="3" name="data" placeholder="What are you thinking?"></textarea>
+        <form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                {% csrf_token %}
+                <!-- <input type="hidden" name="post-id" id="comment.id-{{post.id}}" value="{{post.id}}"> -->
+                <textarea class="form-control" id="data-{{post.id}}" rows="3" name="data" placeholder="What are you thinking?"></textarea>
+            </div>
+            <div class="btn-toolbar justify-content-between">
+                <div class="btn-group">
+                    <a class="comment" id="comment-{{post.id}}"><button type="submit" class="btn btn-primary">Comment</button></a>
                 </div>
-                <div class="btn-toolbar justify-content-between">
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary" id="comment">Comment</button>
-                    </div>
-                </div>
-            </form>
+            </div>
+        </form>
         </div>
     {% endfor %}
 {% endblock %}
