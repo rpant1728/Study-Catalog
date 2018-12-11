@@ -33,16 +33,12 @@ def post_new(request):
 	return render(request, 'post.html', template_data)
 
 def comment_new(request):
-	all_posts = Post.objects.all()
-	template_data = {'posts' : all_posts}
-	post_form = PostForm()
-	template_data['post_form'] = post_form
 	if request.method == "POST":
 		# comment_form = CommentForm(request.POST)
 		# if comment_form.is_valid():
-		print(comment_form.cleaned_data)
 		comment = Comment()
-		comment.post = Post.objects.get(id=request.POST['post_id'])
+		post_id = request.POST['post-id']
+		comment.post = Post.objects.get(id=post_id)
 		comment.author = request.user
 		comment.created_on = timezone.now()
 		comment.content = request.POST['data']
@@ -55,7 +51,9 @@ def comment_new(request):
 	# else:
 		# comment_form = CommentForm()
 		# template_data['comment_form'] = comment_form
-	return render(request, 'comment.html', template_data)
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
+	return render(request, 'home.html', template_data)
 
 def user_posts(request, pk):
 	user = User()

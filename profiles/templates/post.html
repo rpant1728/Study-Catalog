@@ -82,5 +82,19 @@
             </div>
             <br>
         {% endfor %}
+        <div id="comments">
+            <form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    {% csrf_token %}
+                    <input type="hidden" name="post-id" id="post-id" value="{{post.id}}">
+                    <textarea class="form-control" id="data" rows="3" name="data" placeholder="What are you thinking?"></textarea>
+                </div>
+                <div class="btn-toolbar justify-content-between">
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="comment">Comment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     {% endfor %}
 {% endblock %}
