@@ -1,5 +1,6 @@
 {% block post %}
     {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     {% for post in posts %}
         <div class="card gedf-card">
             <div class="card-header">
@@ -48,8 +49,16 @@
                 </p>
             </div>
             <div class="card-footer">
-                <a href="#" class="upvote" id="upvote-{{post.id}}"><i class="fas fa-arrow-up"></i></a>
-                <a href="#" class="downvote" id="downvote-{{post.id}}"><i class="fas fa-arrow-down"></i></a>
+                {% if user in post.upvote.all %}
+                    <a href="#" class="upvote" id="upvote-{{post.id}}"><i id="uparrow-{{post.id}}" class="fas fa-arrow-up icon-red"></i></a>
+                {% else %}
+                    <a href="#" class="upvote" id="upvote-{{post.id}}"><i id="uparrow-{{post.id}}" class="fas fa-arrow-up"></i></a>
+                {% endif %}
+                {% if user in post.downvote.all %}
+                    <a href="#" class="downvote" id="downvote-{{post.id}}"><i id="downarrow-{{post.id}}" class="fas fa-arrow-down icon-red"></i></a>
+                {% else %}
+                    <a href="#" class="downvote" id="downvote-{{post.id}}"><i id="downarrow-{{post.id}}" class="fas fa-arrow-down"></i></a>
+                {% endif %}
                 <span id="votes-{{post.id}}" style="padding-right: 20px; padding-left: 5px;">{{ post.vote_count }}</span>
                 <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
                 <a href="#" class="card-link"><i class="fa fa-mail-forward"></i> Share</a>

@@ -69,17 +69,19 @@ def post_votes(request):
 		post = Post.objects.get(id=post_id)
 		remove = request.POST['remove']
 		if(remove == "0"):
-			post.vote.add(request.user)
 			if(upvote == "1"):
+				post.upvote.add(request.user)
 				post.vote_count = post.vote_count + 1
 			elif(upvote == "0"):
+				post.downvote.add(request.user)
 				post.vote_count = post.vote_count - 1
 			post.save()
 		elif(remove == "1"):
-			post.vote.remove(request.user)
 			if(upvote == "1"):
+				post.upvote.remove(request.user)
 				post.vote_count = post.vote_count - 1
 			elif(upvote == "0"):
+				post.downvote.remove(request.user)
 				post.vote_count = post.vote_count + 1
 			post.save()
 	all_posts = Post.objects.all()

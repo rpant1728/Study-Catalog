@@ -136,7 +136,12 @@ iframe {
 	border: none !important;
 }
 
-
+.icon-red {
+  color: #ff0000;
+}
+.icon-blue {
+  color: #0056b3;
+}
 /*//////////////////////////////////////////////////////////////////
 [ Utility ]*/
 .txt1 {

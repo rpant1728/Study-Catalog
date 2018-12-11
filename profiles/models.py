@@ -8,7 +8,8 @@ class Post(models.Model):
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, related_name='author',on_delete=models.CASCADE)
-    vote = models.ManyToManyField(User, related_name='upvotes')
+    upvote = models.ManyToManyField(User, related_name='upvotes')
+    downvote = models.ManyToManyField(User, related_name='downvotes')
     vote_count = models.IntegerField(default = 0)
     
     def get_absolute_url(self):
