@@ -6,19 +6,39 @@
         jQuery(document).on('click', ".upvote", function(){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
-        $.ajax({
-            type:"POST",
-            url: "{% url 'post_votes' %}",
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'post_id': id,
-                'upvote': "1"
-            },
-            success: function(){
-                var votes = "" + (Number($("#votes-"+id).text())+1); 
-                $("#votes-"+id).text(votes);
-            }
-        });
+        if( $this.prop('color') == "#D3D3D3" ){
+            $.ajax({
+                type:"POST",
+                url: "{% url 'post_votes' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'post_id': id,
+                    'upvote': "1",
+                    'remove': "1"
+                },
+                success: function(){
+                    var votes = "" + (Number($("#votes-"+id).text())-1); 
+                    $("#votes-"+id).text(votes);
+                    $this.prop('color', "#00FFFF");
+                }
+            });
+        }else {
+            $.ajax({
+                type:"POST",
+                url: "{% url 'post_votes' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'post_id': id,
+                    'upvote': "1",
+                    'remove': "0"
+                },
+                success: function(){
+                    var votes = "" + (Number($("#votes-"+id).text())+1); 
+                    $("#votes-"+id).text(votes);
+                    $this.prop('color', "#D3D3D3");
+                }
+            });
+        }
         return false;
     });        
     </script>
@@ -26,19 +46,39 @@
         jQuery(document).on('click', ".downvote", function(){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
-        $.ajax({
-            type:"POST",
-            url: "{% url 'post_votes' %}",
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'post_id': id,
-                'upvote': "0"
-            },
-            success: function(){
-                var votes = "" + (Number($("#votes-"+id).text())-1); 
-                $("#votes-"+id).text(votes);
-            }
-        });
+        if( $this.prop('color') == "#D3D3D3" ){
+            $.ajax({
+                type:"POST",
+                url: "{% url 'post_votes' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'post_id': id,
+                    'upvote': "0",
+                    'remove': "1"
+                },
+                success: function(){
+                    var votes = "" + (Number($("#votes-"+id).text())+1); 
+                    $("#votes-"+id).text(votes);
+                    $this.prop('color', "#00FFFF");
+                }
+            });
+        }else {
+            $.ajax({
+                type:"POST",
+                url: "{% url 'post_votes' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'post_id': id,
+                    'upvote': "0",
+                    'remove': "0"
+                },
+                success: function(){
+                    var votes = "" + (Number($("#votes-"+id).text())-1); 
+                    $("#votes-"+id).text(votes);
+                    $this.prop('color', "#D3D3D3");
+                }
+            });
+        }
         return false;
     });        
     </script>
@@ -52,6 +92,25 @@
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 'title': title,
+                'data': data
+            },
+            success: function(result){
+                $('.posts').html('').load("{% url 'update_posts' %}");
+            }
+        });
+        return false;
+    });
+    </script>
+    <script type="text/javascript">
+        jQuery(document).on('click', "#comment", function(){
+        var id = $this.attr('id').split('-')[1];
+        var data = $('#data').val();
+        $.ajax({
+            type:"POST",
+            url: "{% url 'comment_new' %}",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'post_id': id,
                 'data': data
             },
             success: function(result){

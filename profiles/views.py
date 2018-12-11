@@ -38,24 +38,24 @@ def comment_new(request):
 	post_form = PostForm()
 	template_data['post_form'] = post_form
 	if request.method == "POST":
-		comment_form = CommentForm(request.POST)
-		if comment_form.is_valid():
-			print(comment_form.cleaned_data)
-			comment = Comment()
-			comment.post = Post.objects.get(id=comment_form.cleaned_data.get('post_id'))
-			comment.author = request.user
-			comment.created_on = timezone.now()
-			comment.content = comment_form.cleaned_data['data']
-			comment.save()
-			template_data['comment_form'] = comment_form
-			return render(request, 'base.html', template_data)
-		else:
-			comment_form = CommentForm()	
-			template_data['comment_form'] = comment_form
-	else:
-		comment_form = CommentForm()
-		template_data['comment_form'] = comment_form
-	return render(request, 'base.html', template_data)
+		# comment_form = CommentForm(request.POST)
+		# if comment_form.is_valid():
+		print(comment_form.cleaned_data)
+		comment = Comment()
+		comment.post = Post.objects.get(id=request.POST['post_id'])
+		comment.author = request.user
+		comment.created_on = timezone.now()
+		comment.content = request.POST['data']
+		comment.save()
+		# template_data['comment_form'] = comment_form
+			# return render(request, 'base.html', template_data)
+		# else:
+			# comment_form = CommentForm()	
+			# template_data['comment_form'] = comment_form
+	# else:
+		# comment_form = CommentForm()
+		# template_data['comment_form'] = comment_form
+	return render(request, 'comment.html', template_data)
 
 def user_posts(request, pk):
 	user = User()
@@ -69,12 +69,21 @@ def post_votes(request):
 		post_id = request.POST['post_id']
 		upvote = request.POST['upvote']
 		post = Post.objects.get(id=post_id)
-		post.vote.add(request.user)
-		if(upvote == "1"):
-			post.vote_count = post.vote_count + 1
-		elif(upvote == "0"):
-			post.vote_count = post.vote_count - 1
-		post.save()
+		remove = request.POST['remove']
+		if(remove == "0"):
+			post.vote.add(request.user)
+			if(upvote == "1"):
+				post.vote_count = post.vote_count + 1
+			elif(upvote == "0"):
+				post.vote_count = post.vote_count - 1
+			post.save()
+		elif(remove == "1"):
+			post.vote.remove(request.user)
+			if(upvote == "1"):
+				post.vote_count = post.vote_count - 1
+			elif(upvote == "0"):
+				post.vote_count = post.vote_count + 1
+			post.save()
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'home.html', template_data)

@@ -16,7 +16,7 @@
                         </div>
                         <div class="ml-2">
                             <div class="h5 m-0">{{ post.author.username }}</div>
-                            {% if post.author..profile.all.count != 0 %}
+                            {% if post.author.profile.all.count != 0 %}
                                 {% for profile in post.author.profile.all %}
                                     <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
                                 {% endfor %}
