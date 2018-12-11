@@ -1,6 +1,6 @@
 {% block content %}
 {% load social_share %}
-    <a href="{% url 'post_new' %}">Back</a>
+    <a href="{% url 'home' %}">Back</a>
     <p>Title - {{post.title}}</p>
     <p>Content - {{post.content}}</p>
     <p>Written by - {{post.author}} on {{ post.created_on }}</p>
@@ -26,13 +26,13 @@
     {% endfor %}
     <h4>{{ post.vote_count }}</h4>
     {% if user not in post.vote.all %}
-        <form method='POST' action="{% url 'post_upvote' %}">
+        <form method='POST' action="{% url 'post_votes' %}">
             {% csrf_token %}
             <input type="hidden" name="page" value="post-detail"/>
             <input type="hidden" name="post_id" value="{{post.id}}"/>
             <input type="submit" value="Upvote" class="btn btn-lg btn-primary" id="upvote"/></div>
         </form>
-        <form method='POST' action="{% url 'post_downvote' %}">
+        <form method='POST' action="{% url 'post_votes' %}">
             {% csrf_token %}
             <input type="hidden" name="page" value="post-detail"/>
             <input type="hidden" name="post_id" value="{{post.id}}"/>
