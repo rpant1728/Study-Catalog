@@ -1,4 +1,7 @@
 {% block content %}
+    <a href="{% url 'home' %}">Back</a>
+    <br>
+    {% if user.is_authenticated %}
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
@@ -6,4 +9,7 @@
         </table>
         <input type="submit" value="Submit">
     </form>
+    {% else %}
+    User has not created his profile!
+    {% endif %}
 {% endblock %}

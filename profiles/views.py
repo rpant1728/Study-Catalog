@@ -96,6 +96,8 @@ def profile_detail(request, pk):
 
 def edit_profile(request):
 	user = request.user
+	if not request.user.is_authenticated:
+		return render(request, 'profile_form.html')
 	profile = Profile(user=user)
 	if request.method == "POST":
 		form = ProfileForm(request.POST, request.FILES, instance=profile)
