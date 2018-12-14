@@ -16,7 +16,11 @@
                             {% endif %}
                         </div>
                         <div class="ml-2">
-                            <div class="h5 m-0"><a href="{% url 'profile-detail' post.author.id %}">{{ post.author.username }}</a></div>
+                            {% if user.is_authenticated and post.author.profile.all.count != 0 %}
+                                <div class="h5 m-0"><a href="{% url 'profile-detail' post.author.id %}">{{ post.author.username }}</a></div>
+                            {% else %}
+                                <div class="h5 m-0">{{ post.author.username }}</div>
+                            {% endif %}
                             {% if post.author.profile.all.count != 0 %}
                                 {% for profile in post.author.profile.all %}
                                     <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
