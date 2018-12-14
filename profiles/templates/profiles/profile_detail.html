@@ -1,14 +1,58 @@
-{% block content %}
-    <a href="{% url 'home' %}">Back</a>
-    <img src="{{ profile.profile_picture.url }}">
-    <p>Name - {{ profile.first_name }} {{ profile.last_name }}</p>
-    <p>Description - {{ profile.description }}</p>
-    <p>Degree - {{ profile.degree }}</p>
-    <p>Department - {{ profile.department }}</p>
-    <p>Age - {{ profile.age }}</p>
-    <p>City - {{ profile.city }}</p> 
-    {% if user.is_authenticated %}
-        <a href="{% url 'user_posts' user.id %}">My posts</a>
-    {% endif %}
-{% endblock %}
+{% extends "base.html" %}
 
+{% block profile %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+
+    <div class="main-container">
+        <div class="container">
+            <div class="row">
+                <div class="well profile">
+                    <div class="col-sm-12">
+                        <div class="col-xs-12 col-sm-8">
+                            <h2>{{ profile.first_name}} {{ profile.last_name }}</h2><br>
+                            <p><strong>About: </strong> {{ profile.description }} </p>
+                            <p><strong>Department: </strong> {{ profile.department }} ({{profile.degree}}) </p>
+                            <p><strong>City: </strong> {{ profile.city }} </p>
+                            <p><strong>Age: </strong> {{ profile.age }} </p><br>
+                        </div>             
+                        <div class="col-xs-12 col-sm-4 text-center">
+                            <figure>
+                                <figcaption class="ratings">
+                                    <img src="{{profile.profile_picture.url}}" class="avatar img-circle img-thumbnail" alt="avatar">
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>      
+                    <br>      
+                    <div class="col-xs-12 divider text-center">
+                        <br>
+                        <div class="col-xs-12 col-sm-6 emphasis">
+                            <h2><strong> 20,7K </strong></h2>                    
+                            <p><small>Followers</small></p>
+                            <button class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span> Follow </button>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 emphasis">
+                            <h2><strong>245</strong></h2>                    
+                            <p><small>Following</small></p>
+                            <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <div class="posts">
+                    {% include "post.html" with posts=posts %}
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>  
+{% endblock %}

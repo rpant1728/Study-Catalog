@@ -15,3 +15,12 @@ class ProfileForm(ModelForm):
     class Meta:
         model = Profile
         exclude = ['user']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'placeholder': 'First Name', 'class' : 'form-field text'}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'Last Name', 'class' : 'form-field text'}),
+            'age': forms.TextInput(attrs={'placeholder': 'Age', 'class' : 'form-field text'}),
+            'city': forms.TextInput(attrs={'placeholder': 'City', 'class' : 'form-field text'}),
+            'degree': forms.Select(attrs={'class' : 'form-field choice'}),
+            'department': forms.Select(attrs={'class' : 'form-field choice'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Enter description here', 'class' : 'form-field textarea'}),
+        }

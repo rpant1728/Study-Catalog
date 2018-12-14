@@ -1,0 +1,18 @@
+.form-field {
+    text-indent: 10px;
+    width: 90%; 
+    height: 2em;
+    border-radius: 10px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.col-xs-6 {
+    padding: 10px;
+}
+
+textarea {
+    height: 6em;
+}

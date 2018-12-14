@@ -92,7 +92,11 @@ def profile_detail(request, pk):
 	profile = Profile.objects.filter(user_id=pk)
 	if profile.count() == 0:
 		return HttpResponseRedirect(reverse("edit-profile"))
-	return render(request, 'profiles/profile_detail.html', context={'profile': profile[0]})    
+	user = User()
+	user = User.objects.get(id=pk)
+	posts = Post.objects.filter(author=user)
+	template_data = {'posts' : posts, 'profile': profile[0]}
+	return render(request, 'profiles/profile_detail.html', template_data)  
 
 def edit_profile(request):
 	user = request.user

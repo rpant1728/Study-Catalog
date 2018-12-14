@@ -1,15 +1,81 @@
+{% extends "base.html" %}
+
 {% block content %}
-    <a href="{% url 'home' %}">Back</a>
-    <br>
-    {% if user.is_authenticated %}
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <input type="submit" value="Submit">
-    </form>
-    {% else %}
-    User has not created his profile!
-    {% endif %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <div class="container bootstrap snippet">
+        <div class="row">
+            <div class="col-sm-10"><h1>{{ user.username }}</h1></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="text-center">
+                    <img src="{% static 'images/default.png' %}" class="avatar img-circle img-thumbnail" alt="avatar">
+                    <h6>Upload a different photo...</h6><br>
+                    {{ form.profile_picture }}
+                </div>
+                <br>  
+            </div>
+            <div class="col-sm-9">     
+                <div class="tab-content">
+                    <form action="{% url 'edit-profile' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">   
+                            <div class="col-xs-6">
+                                <label for="first_name"><h4>First name</h4></label><br>
+                                {{ form.first_name }}
+                            </div>
+                        </div>
+                        <div class="form-group"> 
+                            <div class="col-xs-6">
+                            <label for="last_name"><h4>Last name</h4></label><br>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="phone"><h4>Age</h4></label><br>
+                                {{ form.age }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="mobile"><h4>City</h4></label><br>
+                                {{ form.city }}
+                            </div>
+                        </div>
+                        <div class="form-group">   
+                            <div class="col-xs-6">
+                                <label for="email"><h4>Degree</h4></label><br>
+                                {{ form.degree }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="email"><h4>Department</h4></label><br>
+                                {{ form.department }}
+                            </div>
+                        </div>
+                        <div class="form-group"> 
+                            <div class="col-xs-12">
+                                <label for="password"><h4>Description</h4></label><br>
+                                {{ form.description }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <br>
+                                <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    <div class="container bootstrap snippet">
 {% endblock %}
+                                                      
