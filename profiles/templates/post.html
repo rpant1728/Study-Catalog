@@ -16,7 +16,7 @@
                             {% endif %}
                         </div>
                         <div class="ml-2">
-                            {% if user.is_authenticated and post.author.profile.all.count != 0 %}
+                            {% if post.author.profile.all.count != 0 %}
                                 <div class="h5 m-0"><a href="{% url 'profile-detail' post.author.id %}">{{ post.author.username }}</a></div>
                             {% else %}
                                 <div class="h5 m-0">{{ post.author.username }}</div>
@@ -88,7 +88,11 @@
                 <div class="col">
                     <div class="panel panel-default">
                         <div class="panel-heading">
+                        {% if comment.author.profile.all.count != 0 %}
                             <a href="{% url 'profile-detail' comment.author.id %}"><strong>{{comment.author}}</strong></a> <span class="text-muted">commented on {{comment.created_on}}</span>
+                        {% else %}
+                            <strong>{{comment.author}}</strong> <span class="text-muted">commented on {{comment.created_on}}</span>
+                        {% endif %}
                         </div>
                         <div class="panel-body">
                             {{comment.content}}

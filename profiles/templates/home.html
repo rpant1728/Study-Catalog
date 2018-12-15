@@ -13,6 +13,7 @@
             }
             return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
         }
+        console.log(rgb2hex($("#downarrow-"+id).css("color")));
         if( rgb2hex($("#uparrow-"+id).css("color")) == "#ff0000" ){
             $.ajax({
                 type:"POST",
@@ -20,16 +21,18 @@
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'post_id': id,
-                    'upvote': "1",
-                    'remove': "1"
+                    'upvote': "0",
+                    'up_remove': "1",
+                    'downvote' : "0",
+                    'down_remove' : "0"
                 },
                 success: function(){
                     var votes = "" + (Number($("#votes-"+id).text())-1); 
                     $("#votes-"+id).text(votes);
-                    $("#uparrow-"+id).css("color", "#0056b3");
+                    $("#uparrow-"+id).css("color", "#666666");
                 }
             });
-        }else {
+        }else if( rgb2hex($("#downarrow-"+id).css("color")) == "#ff0000" ) {
             $.ajax({
                 type:"POST",
                 url: "{% url 'post_votes' %}",
@@ -37,7 +40,28 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'post_id': id,
                     'upvote': "1",
-                    'remove': "0"
+                    'up_remove': "0",
+                    'downvote' : "0",
+                    'down_remove' : "1"
+                },
+                success: function(){
+                    var votes = "" + (Number($("#votes-"+id).text())+2); 
+                    $("#votes-"+id).text(votes);
+                    $("#uparrow-"+id).css("color", "#ff0000");
+                    $("#downarrow-"+id).css("color", "#666666");
+                }
+            });
+        }else{
+            $.ajax({
+                type:"POST",
+                url: "{% url 'post_votes' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'post_id': id,
+                    'upvote': "1",
+                    'up_remove': "0",
+                    'downvote' : "0",
+                    'down_remove' : "0"
                 },
                 success: function(){
                     var votes = "" + (Number($("#votes-"+id).text())+1); 
@@ -68,15 +92,17 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'post_id': id,
                     'upvote': "0",
-                    'remove': "1"
+                    'up_remove': "0",
+                    'downvote' : "0",
+                    'down_remove' : "1"
                 },
                 success: function(){
                     var votes = "" + (Number($("#votes-"+id).text())+1); 
                     $("#votes-"+id).text(votes);
-                    $("#downarrow-"+id).css("color", "#0056b3");
+                    $("#downarrow-"+id).css("color", "#666666");
                 }
             });
-        }else {
+        }else if( rgb2hex($("#uparrow-"+id).css("color")) == "#ff0000" ){
             $.ajax({
                 type:"POST",
                 url: "{% url 'post_votes' %}",
@@ -84,7 +110,28 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'post_id': id,
                     'upvote': "0",
-                    'remove': "0"
+                    'up_remove': "1",
+                    'downvote' : "1",
+                    'down_remove' : "0"
+                },
+                success: function(){
+                    var votes = "" + (Number($("#votes-"+id).text())-2); 
+                    $("#votes-"+id).text(votes);
+                    $("#downarrow-"+id).css("color", "#ff0000");
+                    $("#uparrow-"+id).css("color", "#666666");
+                }
+            });
+        }else{
+            $.ajax({
+                type:"POST",
+                url: "{% url 'post_votes' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'post_id': id,
+                    'upvote': "0",
+                    'up_remove' : "0",
+                    'downvote': "1",
+                    'down_remove' : "0"
                 },
                 success: function(){
                     var votes = "" + (Number($("#votes-"+id).text())-1); 

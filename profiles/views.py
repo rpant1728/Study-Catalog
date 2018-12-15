@@ -66,24 +66,23 @@ def post_votes(request):
 	if request.method == "POST":
 		post_id = request.POST['post_id']
 		upvote = request.POST['upvote']
+		downvote = request.POST['downvote']
+		down_remove = request.POST['down_remove']
+		up_remove = request.POST['up_remove'] 
 		post = Post.objects.get(id=post_id)
-		remove = request.POST['remove']
-		if(remove == "0"):
-			if(upvote == "1"):
-				post.upvote.add(request.user)
-				post.vote_count = post.vote_count + 1
-			elif(upvote == "0"):
-				post.downvote.add(request.user)
-				post.vote_count = post.vote_count - 1
-			post.save()
-		elif(remove == "1"):
-			if(upvote == "1"):
-				post.upvote.remove(request.user)
-				post.vote_count = post.vote_count - 1
-			elif(upvote == "0"):
-				post.downvote.remove(request.user)
-				post.vote_count = post.vote_count + 1
-			post.save()
+		if(upvote == "1"):
+			post.upvote.add(request.user)
+			post.vote_count = post.vote_count + 1
+		if(up_remove == "1"):
+			post.upvote.remove(request.user)
+			post.vote_count = post.vote_count - 1
+		if(down_remove == "1"):
+			post.downvote.remove(request.user)
+			post.vote_count = post.vote_count + 1			
+		if(downvote == "1"):
+			post.downvote.add(request.user)
+			post.vote_count = post.vote_count - 1
+		post.save()
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'home.html', template_data)
