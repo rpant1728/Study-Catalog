@@ -3,8 +3,17 @@
 {% load social_share %}
 {% load static %}
 {% load staticfiles %}
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var token = "{{csrf_token}}";
+    var vote_url = "{% url 'post_votes' %}";
+    var post_url = "{% url 'post_new' %}";
+    var comment_url = "{% url 'comment_new' %}";
+</script>
+<script src="{% static 'js/ajax.js' %}"></script>
+
     <a href="{% url 'home' %}">Back</a>
     <div class="row">
         <div class="col-sm-3"></div>
