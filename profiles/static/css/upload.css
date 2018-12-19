@@ -1,0 +1,22 @@
+.form-field {
+    width: 100%; 
+    border-radius: 10px;
+}
+
+.textarea {
+    height: 4em;
+    padding: 10px;
+}
+
+.text {
+    padding: 10px;
+    height: 2em;
+}
+
+.choice {
+    height: 2.5em;
+}
+
+.form-group {
+    padding: 15px;
+}

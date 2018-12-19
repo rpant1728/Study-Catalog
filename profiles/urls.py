@@ -11,8 +11,8 @@ urlpatterns = [
     url(r'^comment/', views.comment_new, name='comment_new'),
     url(r'^votes/', views.post_votes, name='post_votes'),
     url(r'^posts/(?P<pk>\d+)$', views.user_posts, name='user_posts'),
-    url(r'^update-posts/', views.update_posts, name='update_posts'),
     url(r'^edit-profile', views.edit_profile, name='edit-profile'),
     url(r'^profile/(?P<pk>\d+)$', views.profile_detail, name='profile-detail'),
     url(r'^p(?P<pk>\d+)$', views.post_detail, name='post-detail'),
+    url(r'^upload-resource/', views.upload_resource, name='upload-resource'),
 ]

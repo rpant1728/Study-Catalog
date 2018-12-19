@@ -61,4 +61,41 @@ class Profile(models.Model):
     def __str__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
+class Course(models.Model):
+    DEPARTMENTS = (
+        ('CSE', 'Computer Science and Engineering'),
+        ('CE', 'Chemical Engineering'),
+        ('BT', 'Bio-Technology'),
+        ('CST', 'Chemical Science & Technology'),
+        ('CE', 'Civil Engineering'),
+        ('ECE', 'Electronics & Communication Engineering'),
+        ('EEE', 'Electronics & Electrical Engineering'),
+        ('EP', 'Engineering Physics'),
+        ('ME', 'Mechanical Engineering'),
+        ('MNC', 'Mathematics & Computing'),
+    )
+    DEGREES = (
+        ('PhD', 'Doctorate of Philosophy'), 
+        ('B.Tech', 'Bachelor of Technology'), 
+        ('M.Tech', 'Master of Technology'), 
+        ('B.Des', 'Bachelor of Design'),
+        ('M.Des', 'Master of Design')
+    ) 
+    department = models.CharField(max_length=3, choices=DEPARTMENTS, blank=True, help_text='Department')
+    degree = models.CharField(max_length=6, choices=DEGREES, blank=True, help_text='Degree')
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=20)
+    semester = models.IntegerField()
+
+    def __str__(self):
+        return "%s" % self.name
+
+class Resource(models.Model):
+    title = models.CharField(max_length=300)
+    description = models.CharField(max_length=300)
+    course = models.ForeignKey(Course, related_name='course', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='resources/')
+    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+
 

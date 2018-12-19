@@ -1,15 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
-from .models import Profile
-
-class PostForm(forms.Form):
-    title = forms.CharField(max_length=1000, help_text="Enter title!", widget=forms.Textarea)
-    data = forms.CharField(max_length=1000, help_text="Write your post!", widget=forms.Textarea)
-
-class CommentForm(forms.Form):
-    data = forms.CharField(max_length=1000)
-    post_id = forms.IntegerField()
+from .models import Profile, Resource
 
 class ProfileForm(ModelForm):
     class Meta:
@@ -23,4 +15,20 @@ class ProfileForm(ModelForm):
             'degree': forms.Select(attrs={'class' : 'form-field choice'}),
             'department': forms.Select(attrs={'class' : 'form-field choice'}),
             'description': forms.Textarea(attrs={'placeholder': 'Enter description here', 'class' : 'form-field textarea'}),
+        }
+
+class ResourceForm(ModelForm):
+    def __init__(self, courses, *args,**kwargs):
+        super(ResourceForm, self).__init__(*args, **kwargs) 
+        self.fields['course'].queryset = courses 
+        self.fields['course'].empty_label = "Select course"
+    
+    class Meta:
+        model = Resource
+        exclude = ['user', 'uploaded_on']
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Enter suitable title', 'class' : 'form-field text'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Enter description', 'class' : 'form-field textarea'}),
+            'course': forms.Select(attrs={'class' : 'form-field choice'}),
+            'file': forms.FileInput(attrs={'class' : 'form-field file'}),
         }

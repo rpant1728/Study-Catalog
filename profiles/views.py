@@ -1,23 +1,25 @@
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
-from profiles.models import Post, Comment, Profile
-from profiles.forms import PostForm, CommentForm, ProfileForm
+from profiles.models import Post, Comment, Profile, Course, Resource
+from profiles.forms import ProfileForm, ResourceForm
 from django.views import generic
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 def home(request):
+	profile = Profile.objects.filter(user_id=request.user.id)
+	if profile.count() == 0:
+		return HttpResponseRedirect(reverse("edit-profile"))
 	all_posts = Post.objects.all()
-	template_data = {'posts' : all_posts}
+	courses = Course.objects.filter(department=profile[0].department)
+	user = request.user
+	form = ResourceForm(courses)
+	template_data = {'posts' : all_posts, 'form': form}
 	return render(request, 'home.html', template_data)
 
 def post_new(request):
-	# all_posts = Post.objects.all()
-	template_data = dict()
 	if request.method == "POST":
-		# form = PostForm(request.POST)
-		# if form.is_valid():
 		post = Post()
 		post.title = request.POST['title']
 		post.author = request.user
@@ -25,17 +27,12 @@ def post_new(request):
 		post.content = request.POST['data']
 		post.upvote_count = 0
 		post.save()
-		template_data['post'] = post
-		# template_data['post_form'] = form
-		# else:
-		# 	form = PostForm()	
-		# 	template_data['post_form'] = form
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
 	return render(request, 'post.html', template_data)
 
 def comment_new(request):
 	if request.method == "POST":
-		# comment_form = CommentForm(request.POST)
-		# if comment_form.is_valid():
 		comment = Comment()
 		post_id = request.POST['post-id']
 		comment.post = Post.objects.get(id=post_id)
@@ -43,14 +40,6 @@ def comment_new(request):
 		comment.created_on = timezone.now()
 		comment.content = request.POST['data']
 		comment.save()
-		# template_data['comment_form'] = comment_form
-			# return render(request, 'base.html', template_data)
-		# else:
-			# comment_form = CommentForm()	
-			# template_data['comment_form'] = comment_form
-	# else:
-		# comment_form = CommentForm()
-		# template_data['comment_form'] = comment_form
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'home.html', template_data)
@@ -117,8 +106,15 @@ def post_detail(request, pk):
 		return HttpResponseRedirect(reverse("post_new"))
 	return render(request, 'post/post_detail.html', context={'post': post[0]}) 
 
-def update_posts(request):
-	all_posts = Post.objects.all()
-	template_data = {'posts' : all_posts}
-	return render(request, 'post.html', template_data)
-	
+def upload_resource(request):
+	profile = Profile.objects.filter(user_id=request.user.id)
+	courses = Course.objects.filter(department=profile[0].department)
+	user = request.user
+	resource = Resource(user=user, uploaded_on=timezone.now())
+	if request.method == "POST":
+		form = ResourceForm(courses, request.POST, request.FILES, instance=resource)
+		print(user.id)
+		if form.is_valid():
+			form.save()
+			print(user.id)
+	return HttpResponseRedirect(reverse("home"))
