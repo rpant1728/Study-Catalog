@@ -11,7 +11,7 @@
         var comment_url = "{% url 'comment_new' %}";
         var upload_url = "{% url 'upload-resource' %}";
     </script>
-    <script src="{% static 'js/ajax.js' %}"></script>
+    <script src="{% static 'js/home.js' %}"></script>
 
     <div class="container-fluid gedf-wrapper">
         <div class="row">
@@ -74,34 +74,75 @@
                                 </div>
                                 <div id="files-tab" class="tab-pane fade">
                                     <br>
-                                    <form action="{% url 'upload-resource' %}" method="POST" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        <div class="form-group">   
-                                            <div class="col-xs-12">
-                                                {{ form.title }}
-                                            </div>
-                                        </div>
-                                        <div class="form-group"> 
-                                            <div class="col-xs-12">
-                                                {{ form.description }}
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-xs-6">
-                                                {{ form.course }}
-                                            </div>
-                                            <div class="form-group">  
-                                                <div class="col-xs-6">
-                                                    {{ form.file }}
+                                    <div class="col-sm-4">
+                                        <a id="upload-resource" href="#">Upload Resource</a> 
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <a id="create-course" href="#">Create Course</a>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <a id="request-admin" href="#">Admin Request</a> 
+                                    </div>
+                                    <div id="resource-form">
+                                        <form action="{% url 'upload-resource' %}" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-group">   
+                                                <div class="col-xs-12">
+                                                    {{ res_form.title }}
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="btn-toolbar justify-content-between">
-                                            <div class="btn-group">
-                                                <button type="submit" class="btn btn-primary">Upload</button>
+                                            <div class="form-group"> 
+                                                <div class="col-xs-12">
+                                                    {{ res_form.description }}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                            <div class="form-group">
+                                                <div class="col-xs-6">
+                                                    {{ res_form.course }}
+                                                </div>
+                                                <div class="form-group">  
+                                                    <div class="col-xs-6">
+                                                        {{ res_form.file }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn-toolbar justify-content-between">
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div id="course-form">                                   
+                                        <form action="{% url 'create-course' %}" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-group">   
+                                                <div class="col-xs-6">
+                                                    {{ course_form.department }}
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    {{ course_form.degree }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-xs-6">
+                                                    {{ course_form.name }}
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    {{ course_form.code }}
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="btn-toolbar justify-content-between">
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-primary">Create Course</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div id="admin-request">
+                                        <p>Hello, World!</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

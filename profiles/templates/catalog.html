@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load static %}
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}"> -->
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var token = "{{csrf_token}}";
+        var approve_course_url = "{% url 'approve-course' %}";
+        var reject_course_url = "{% url 'reject-course' %}";
+        var approve_resource_url = "{% url 'approve-resource' %}";
+        var reject_resource_url = "{% url 'reject-resource' %}";
+    </script>
+    <script src="{% static 'js/catalog.js' %}"></script>
+    {% if is_admin %}
+        <div class="course-requests">
+        Course Requests
+            {% for course in course_requests %}
+                <div id="course-{{course.id}}">
+                    <p id="name-{{course.id}}">{{ course.name }}</p>
+                    <button class="approve-course" id="approve-{{course.id}}">Approve</button>
+                    <button class="reject-course" id="reject-{{course.id}}">Reject</button>
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+        <hr>
+        <br>
+        <div class="resource-requests">
+            Resource Requests
+                {% for resource in resource_requests %}
+                    <div id="resource-{{resource.id}}">
+                        <p id="name-{{resource.id}}">{{ resource.title }}</p>
+                        <button class="approve-resource" id="approve-{{resource.id}}">Approve</button>
+                        <button class="reject-resource" id="reject-{{resource.id}}">Reject</button>
+                        <br>
+                    </div>
+                {% endfor %}
+            </div>
+    {% endif %}
+
+{% endblock %}

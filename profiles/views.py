@@ -2,20 +2,22 @@ from django.shortcuts import render, render_to_response, redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
 from profiles.models import Post, Comment, Profile, Course, Resource
-from profiles.forms import ProfileForm, ResourceForm
+from profiles.forms import ProfileForm, ResourceForm, CourseForm
 from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
+from django.db.models import Q
+from django.db import connection
 
 def home(request):
 	profile = Profile.objects.filter(user_id=request.user.id)
 	if profile.count() == 0:
 		return HttpResponseRedirect(reverse("edit-profile"))
 	all_posts = Post.objects.all()
-	courses = Course.objects.filter(department=profile[0].department)
-	user = request.user
-	form = ResourceForm(courses)
-	template_data = {'posts' : all_posts, 'form': form}
+	courses = Course.objects.filter(Q(department=profile[0].department) | Q(department__contains="OT"))
+	resource_form = ResourceForm(courses)
+	course_form = CourseForm()
+	template_data = {'posts' : all_posts, 'res_form': resource_form, 'course_form': course_form}
 	return render(request, 'home.html', template_data)
 
 def post_new(request):
@@ -107,14 +109,81 @@ def post_detail(request, pk):
 	return render(request, 'post/post_detail.html', context={'post': post[0]}) 
 
 def upload_resource(request):
-	profile = Profile.objects.filter(user_id=request.user.id)
+	profile = Profile.objects.filter(user=request.user)
 	courses = Course.objects.filter(department=profile[0].department)
 	user = request.user
 	resource = Resource(user=user, uploaded_on=timezone.now())
 	if request.method == "POST":
 		form = ResourceForm(courses, request.POST, request.FILES, instance=resource)
-		print(user.id)
 		if form.is_valid():
 			form.save()
-			print(user.id)
 	return HttpResponseRedirect(reverse("home"))
+
+def create_course(request):
+	course = Course(approved=False)
+	if request.method == "POST":
+		form = CourseForm(request.POST, instance=course)
+		if form.is_valid():
+			new_course = form.save()
+			profile = Profile.objects.filter(user=request.user).first()	
+			profile.admin_of_courses.add(new_course)
+			profile.save()
+	return HttpResponseRedirect(reverse("home"))
+
+def catalog(request):
+	profile = Profile.objects.filter(user=request.user).first()
+	template_data = dict()
+	all_course_requests = Course.objects.filter(approved=False)
+	all_resource_requests = Resource.objects.filter(approved=False)
+	if profile.admin:
+		template_data['is_admin'] = True
+		template_data['course_requests'] = all_course_requests
+		template_data['resource_requests'] = all_resource_requests
+		return render(request, 'catalog.html', template_data)
+	if profile.admin_of_courses.all().count() > 0:
+		template_data['is_admin'] = True
+		resource_requests = []
+		for resource in all_resource_requests:
+			for course in profile.admin_of_courses.all():
+				if resource.course == course:
+					resource_requests.append(resource)	
+		template_data['resource_requests'] = resource_requests
+		return render(request, 'catalog.html', template_data)
+
+def approve_course(request):
+	template_data = dict()
+	if request.method == "POST":
+		course_id = request.POST['course_id']
+		course = Course.objects.get(id=course_id)
+		course.approved = True
+		course.save()
+	return HttpResponseRedirect(reverse("catalog"))
+
+def reject_course(request):
+	template_data = dict()
+	if request.method == "POST":
+		course_id = request.POST['course_id']
+		course = Course.objects.get(id=course_id)
+		profiles = Profile.objects.all()
+		for profile in profiles:
+			if course in profile.admin_of_courses.all():
+				profile.admin_of_courses.remove(course)
+		course.delete()
+	return HttpResponseRedirect(reverse("catalog"))
+
+def approve_resource(request):
+	template_data = dict()
+	if request.method == "POST":
+		resource_id = request.POST['resource_id']
+		resource = Resource.objects.get(id=resource_id)
+		resource.approved = True
+		resource.save()
+	return HttpResponseRedirect(reverse("catalog"))
+
+def reject_resource(request):
+	template_data = dict()
+	if request.method == "POST":
+		resource_id = request.POST['resource_id']
+		resource = Resource.objects.get(id=resource_id)
+		resource.delete()
+	return HttpResponseRedirect(reverse("catalog"))
