@@ -6,7 +6,7 @@ from .models import Profile, Resource, Course
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ['user']
+        exclude = ['user', 'admin', 'admin_request', 'admin_of_courses']
         widgets = {
             'first_name': forms.TextInput(attrs={'placeholder': 'First Name', 'class' : 'form-field text'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Last Name', 'class' : 'form-field text'}),

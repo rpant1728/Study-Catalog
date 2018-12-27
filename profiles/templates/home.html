@@ -10,6 +10,7 @@
         var post_url = "{% url 'post_new' %}";
         var comment_url = "{% url 'comment_new' %}";
         var upload_url = "{% url 'upload-resource' %}";
+        var admin_request_url = "{% url 'admin-request' %}";
     </script>
     <script src="{% static 'js/home.js' %}"></script>
 
@@ -141,7 +142,16 @@
                                         </form>
                                     </div>
                                     <div id="admin-request">
-                                        <p>Hello, World!</p>
+                                        {% for profile in user.profile.all %}
+                                            {% if profile.admin %}
+                                                <p>You are already an admin</p>
+                                            {% elif profile.admin_request %}
+                                                <p>You have already requested to be an admin</p>
+                                            {% else %}
+                                                <p id="text"></p>
+                                                <button class="admin-req" id="admin-{{ profile.user.id }}">Admin Request</a>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>

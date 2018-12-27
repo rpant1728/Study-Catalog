@@ -97,6 +97,7 @@ def edit_profile(request):
 		form = ProfileForm(request.POST, request.FILES, instance=profile)
 		if form.is_valid():
 			form.save()
+			profile.save()
 			return HttpResponseRedirect(reverse("profile-detail", args=(user.id,)))
 	else:
 		form = ProfileForm()
@@ -135,10 +136,12 @@ def catalog(request):
 	template_data = dict()
 	all_course_requests = Course.objects.filter(approved=False)
 	all_resource_requests = Resource.objects.filter(approved=False)
+	all_admin_requests = Profile.objects.filter(admin_request=True)
 	if profile.admin:
 		template_data['is_admin'] = True
 		template_data['course_requests'] = all_course_requests
 		template_data['resource_requests'] = all_resource_requests
+		template_data['admin_requests'] = all_admin_requests
 		return render(request, 'catalog.html', template_data)
 	if profile.admin_of_courses.all().count() > 0:
 		template_data['is_admin'] = True
@@ -149,6 +152,7 @@ def catalog(request):
 					resource_requests.append(resource)	
 		template_data['resource_requests'] = resource_requests
 		return render(request, 'catalog.html', template_data)
+	return render(request, 'catalog.html', template_data)
 
 def approve_course(request):
 	template_data = dict()
@@ -186,4 +190,32 @@ def reject_resource(request):
 		resource_id = request.POST['resource_id']
 		resource = Resource.objects.get(id=resource_id)
 		resource.delete()
+	return HttpResponseRedirect(reverse("catalog"))
+
+def admin_request(request):
+	template_data = dict()
+	if request.method == "POST":
+		user_id = request.POST['user_id']
+		user = Profile.objects.get(user=user_id)
+		user.admin_request = True
+		user.save()
+	return HttpResponseRedirect(reverse("home"))
+
+def approve_admin(request):
+	template_data = dict()
+	if request.method == "POST":
+		user_id = request.POST['user_id']
+		user = Profile.objects.get(user=user_id)
+		user.admin_request = False
+		user.admin = True
+		user.save()
+	return HttpResponseRedirect(reverse("catalog"))
+
+def reject_admin(request):
+	template_data = dict()
+	if request.method == "POST":
+		user_id = request.POST['user_id']
+		user = Profile.objects.get(user=user_id)
+		user.admin_request = False
+		user.save()
 	return HttpResponseRedirect(reverse("catalog"))

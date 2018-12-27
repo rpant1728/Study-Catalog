@@ -21,4 +21,7 @@ urlpatterns = [
     url(r'^reject-course/', views.reject_course, name='reject-course'),
     url(r'^approve-resource/', views.approve_resource, name='approve-resource'),
     url(r'^reject-resource/', views.reject_resource, name='reject-resource'),
+    url(r'^approve-admin/', views.approve_admin, name='approve-admin'),
+    url(r'^reject-admin/', views.reject_admin, name='reject-admin'),
+    url(r'^admin-request/', views.admin_request, name='admin-request'),
 ]

@@ -69,6 +69,7 @@ class Profile(models.Model):
     user = models.ForeignKey(User, related_name='profile', on_delete=models.CASCADE, null=True)
     admin_of_courses = models.ManyToManyField(Course, related_name='courses')
     admin = models.BooleanField(default=False)
+    admin_request = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('profile-detail', args=[str(self.id)])

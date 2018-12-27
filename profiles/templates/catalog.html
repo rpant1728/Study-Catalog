@@ -2,7 +2,8 @@
 
 {% block content %}
     {% load static %}
-    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}"> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         var token = "{{csrf_token}}";
@@ -10,6 +11,8 @@
         var reject_course_url = "{% url 'reject-course' %}";
         var approve_resource_url = "{% url 'approve-resource' %}";
         var reject_resource_url = "{% url 'reject-resource' %}";
+        var approve_admin_url = "{% url 'approve-admin' %}";
+        var reject_admin_url = "{% url 'reject-admin' %}";
     </script>
     <script src="{% static 'js/catalog.js' %}"></script>
     {% if is_admin %}
@@ -18,8 +21,10 @@
             {% for course in course_requests %}
                 <div id="course-{{course.id}}">
                     <p id="name-{{course.id}}">{{ course.name }}</p>
-                    <button class="approve-course" id="approve-{{course.id}}">Approve</button>
-                    <button class="reject-course" id="reject-{{course.id}}">Reject</button>
+                    <a class="approve-course" id="approve-{{course.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                    <!-- <button class="approve-course" id="approve-{{course.id}}">Approve</button> -->
+                    <a class="reject-course" id="reject-{{course.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    <!-- <button class="reject-course" id="reject-{{course.id}}">Reject</button> -->
                 </div>
                 <br>
             {% endfor %}
@@ -31,12 +36,29 @@
                 {% for resource in resource_requests %}
                     <div id="resource-{{resource.id}}">
                         <p id="name-{{resource.id}}">{{ resource.title }}</p>
-                        <button class="approve-resource" id="approve-{{resource.id}}">Approve</button>
-                        <button class="reject-resource" id="reject-{{resource.id}}">Reject</button>
+                        <a class="approve-resource" id="approve-{{resource.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                        <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
+                        <a class="reject-resource" id="reject-{{resource.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                        <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
                         <br>
                     </div>
                 {% endfor %}
-            </div>
+        </div>
+        <hr>
+        <br>
+        <div class="admin-requests">
+            Admin Requests
+                {% for profile in admin_requests %}
+                    <div id="admin-{{profile.user.id}}">
+                        <p id="name-{{profile.user.id}}">{{ profile.first_name }}</p>
+                        <a class="approve-admin" id="approve-{{profile.user.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                        <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
+                        <a class="reject-admin" id="reject-{{profile.user.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                        <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
+                        <br>
+                    </div>
+                {% endfor %}
+        </div>
     {% endif %}
-
+    
 {% endblock %}

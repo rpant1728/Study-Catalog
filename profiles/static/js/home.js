@@ -194,4 +194,21 @@ $(document).ready(function(){
         $('#admin-request').show();
     });
 
+    $(".admin-req").on('click', function(){
+        var $this = $(this)
+        var id = $this.attr('id').split('-')[1];
+        $.ajax({
+            type:"POST",
+            url: admin_request_url,
+            data: {
+                'csrfmiddlewaretoken': token,
+                'user_id': id
+            },
+            success: function(result){
+                $('#text').text("You have already requested to be an admin");
+                $('#admin-'+id).hide();
+            }
+        });
+        return false;
+    });
 });

@@ -64,4 +64,36 @@ $(document).ready(function(){
         });
     });
 
+    $(".approve-admin").on('click', function(){
+        var $this = $(this);
+        var id = $this.attr('id').split('-')[1];
+        $.ajax({
+            type:"POST",
+            url: approve_admin_url,
+            data: {
+                'csrfmiddlewaretoken': token,
+                'user_id': id,
+            },
+            success: function(){
+                $('.admin-requests').load(location.href+" .admin-requests", "");
+            }
+        });
+    });
+
+    $(".reject-admin").on('click', function(){
+        var $this = $(this);
+        var id = $this.attr('id').split('-')[1];
+        console.log(id);
+        $.ajax({
+            type:"POST",
+            url: reject_admin_url,
+            data: {
+                'csrfmiddlewaretoken': token,
+                'user_id': id,
+            },
+            success: function(){
+                $('.admin-requests').load(location.href+" .admin-requests", "");
+            }
+        });
+    });
 });
