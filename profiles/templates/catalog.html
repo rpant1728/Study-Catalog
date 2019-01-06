@@ -60,5 +60,10 @@
                 {% endfor %}
         </div>
     {% endif %}
-    
+    <hr>
+    <br>
+    Files<br>
+    {% for resource in resources %}
+        <a href="{{resource.file.url}}">{{resource.title}}</a><br>
+    {% endfor %}
 {% endblock %}

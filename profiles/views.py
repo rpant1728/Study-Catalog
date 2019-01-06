@@ -133,7 +133,9 @@ def create_course(request):
 
 def catalog(request):
 	profile = Profile.objects.filter(user=request.user).first()
+	resources = Resource.objects.filter(course__department__contains=profile.department)
 	template_data = dict()
+	template_data['resources'] = resources
 	all_course_requests = Course.objects.filter(approved=False)
 	all_resource_requests = Resource.objects.filter(approved=False)
 	all_admin_requests = Profile.objects.filter(admin_request=True)
