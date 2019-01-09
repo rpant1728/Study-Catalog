@@ -174,7 +174,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $(".comment").on('click', function(){
+    $(document).on('click','.comment',function (e){
         var $this = $(this)
         var id = $this.attr('id').split('-')[1];
         var data = $('#data-'+id).val();
@@ -184,11 +184,11 @@ $(document).ready(function(){
             url: comment_url,
             data: {
                 'csrfmiddlewaretoken': token,
-                'post-id': id,
+                'post-id' : id,
                 'data': data
             },
             success: function(result){
-                $('#comments-'+id).load(location.href+" #comments-" +id,"");
+                $('#comments-'+id).load(location.href+" #comments-" +id);
             }
         });
         return false;
