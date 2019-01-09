@@ -33,6 +33,20 @@ def post_new(request):
 	template_data = {'posts' : all_posts}
 	return render(request, 'post.html', template_data)
 
+def post_delete(request):
+	if request.method == "POST":
+		post_id = request.POST['post_id']
+		post = Post.objects.get(id=post_id)
+		comments = Comment.objects.filter(post = post)
+
+		for comment in comments.all():
+			comment.delete()
+
+		post.delete();
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
+	return render(request, 'home.html', template_data)
+
 def comment_new(request):
 	if request.method == "POST":
 		comment = Comment()
@@ -133,7 +147,7 @@ def create_course(request):
 
 def catalog(request):
 	profile = Profile.objects.filter(user=request.user).first()
-	resources = Resource.objects.filter(course__department__contains=profile.department)
+	resources = Resource.objects.filter(course__department__contains=profile.department, approved=True )
 	template_data = dict()
 	template_data['resources'] = resources
 	all_course_requests = Course.objects.filter(approved=False)

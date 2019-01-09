@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^auth/', include('social_django.urls', namespace='social')),  
     url(r'^$', views.home, name='home'),
     url(r'^post/', views.post_new, name='post_new'),
+    url(r'^post-delete/', views.post_delete, name='post_delete'),
     url(r'^comment/', views.comment_new, name='comment_new'),
     url(r'^votes/', views.post_votes, name='post_votes'),
     url(r'^posts/(?P<pk>\d+)$', views.user_posts, name='user_posts'),

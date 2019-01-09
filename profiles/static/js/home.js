@@ -136,7 +136,25 @@ $(document).ready(function(){
             });
         }
         return false;
-    });        
+    });     
+
+    $( ".delete_post").on('click', function(){
+        console.log("Test");
+        var $this = $(this);
+        var post_id = $this.attr('id').split('-')[1];
+        $.ajax({
+            type:"POST",
+            url: post_delete,
+            data: {
+                'csrfmiddlewaretoken': token,
+                'post_id' : post_id
+            },
+            success: function(result){
+                $("#post-" + post_id).hide();
+            }
+        });
+        return false;
+    });   
 
     $( "#post").on('click', function(){
         var title = $('#title').val();
