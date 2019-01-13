@@ -10,7 +10,6 @@
         var post_url = "{% url 'post_new' %}";
         var post_delete = "{% url 'post_delete' %}";
         var comment_url = "{% url 'comment_new' %}";
-        var upload_url = "{% url 'upload-resource' %}";
         var admin_request_url = "{% url 'admin-request' %}";
     </script>
     <script src="{% static 'js/home.js' %}"></script>
@@ -76,44 +75,11 @@
                                 </div>
                                 <div id="files-tab" class="tab-pane fade">
                                     <br>
-                                    <div class="col-sm-4">
-                                        <a id="upload-resource" href="#">Upload Resource</a> 
-                                    </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
                                         <a id="create-course" href="#">Create Course</a>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
                                         <a id="request-admin" href="#">Admin Request</a> 
-                                    </div>
-                                    <div id="resource-form">
-                                        <form action="{% url 'upload-resource' %}" method="POST" enctype="multipart/form-data">
-                                            {% csrf_token %}
-                                            <div class="form-group">   
-                                                <div class="col-xs-12">
-                                                    {{ res_form.title }}
-                                                </div>
-                                            </div>
-                                            <div class="form-group"> 
-                                                <div class="col-xs-12">
-                                                    {{ res_form.description }}
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="col-xs-6">
-                                                    {{ res_form.course }}
-                                                </div>
-                                                <div class="form-group">  
-                                                    <div class="col-xs-6">
-                                                        {{ res_form.file }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="btn-toolbar justify-content-between">
-                                                <div class="btn-group">
-                                                    <button type="submit" class="btn btn-primary">Upload</button>
-                                                </div>
-                                            </div>
-                                        </form>
                                     </div>
                                     <div id="course-form">                                   
                                         <form action="{% url 'create-course' %}" method="POST" enctype="multipart/form-data">

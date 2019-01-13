@@ -62,8 +62,8 @@
     {% endif %}
     <hr>
     <br>
-    Files<br>
-    {% for resource in resources %}
-        <a href="{{resource.file.url}}">{{resource.title}}</a><br>
+    Courses<br>
+    {% for course in courses %}
+        <a href="{% url 'course-detail' course.id %}">{{course.name}}</a><br>
     {% endfor %}
 {% endblock %}

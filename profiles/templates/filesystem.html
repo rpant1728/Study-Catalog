@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load static %}  
+    <script>
+        var token = "{{csrf_token}}";
+        var folder_url = "{% url 'create-folder' %}";
+        var root = false;
+        var course = "{{course.id}}";
+        var folder = "{{folder.id}}";
+    </script>            
+    <script src="{% static 'js/filesystem.js' %}"></script>   
+    <link rel="stylesheet" type="text/css" href="{% static 'css/filesystem.css' %}">
+
+    <div class="forms">
+        {% if root %}
+            <script>
+                var root = true;
+            </script> 
+            <div class="upload row">
+                <div class="col-sm-6">
+                    <form>
+                        <div class="form-group">   
+                            <input type="text" class="text" placeholder="New Folder" id="folder-title">
+                            <input type="hidden" id="course_id" value="{{course.id}}">
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary" id="create-folder">Create Folder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="upload row">
+                <div class="col-sm-6">
+                    <form action="{% url 'upload-resource' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{form.files}}
+                            {{form.course}}
+                            {{form.folder}}
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary" id="upload-files">Upload files</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">   
+                        <input type="text" class="text" placeholder="New Folder" id="folder-title">
+                        <input type="hidden" id="course_id" value="{{course.id}}">
+                        <input type="hidden" id="folder_id" value="{{folder.id}}">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="create-folder">Create Folder</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="resources">
+        {% for folder in folders %}
+            <hr>
+            <div class="item row">
+                <div class="col-sm-6">
+                    <i class="fa fa-folder" aria-hidden="true"></i>
+                    <a href="{% url 'folder-detail' course.id folder.id %}">{{folder.title}}</a>
+                </div>
+                <div class="col-sm-6">
+                    {{folder.created_on}}
+                </div>  
+            </div>
+        {% endfor %}
+        {% for resource in resources %}
+            <hr>
+            <div class="item row">
+                <div class="col-sm-6">
+                    <i class="fa fa-file" aria-hidden="true"></i>
+                    <a href="{{resource.file.url}}">{{resource.file.url}}</a>
+                </div> 
+                <div class="col-sm-6">
+                    {{resource.uploaded_on}}
+                </div> 
+            </div>
+        {% endfor %}
+        <hr>
+    </div>
+{% endblock %}

@@ -77,16 +77,20 @@ class Profile(models.Model):
     def __str__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
-class Resource(models.Model):
-    title = models.CharField(max_length=300)
-    description = models.CharField(max_length=300)
-    course = models.ForeignKey(Course, related_name='course', on_delete=models.CASCADE)
-    file = models.FileField(upload_to='resources/')
-    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
-    uploaded_on = models.DateTimeField(auto_now_add=True)
-    approved = models.BooleanField(default=False)
+class Folder(models.Model):
+    title = models.CharField(max_length=200)
+    folders = models.ManyToManyField("self", symmetrical=False)
+    course = models.ForeignKey(Course, related_name="folders", on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    root = models.BooleanField(default=False)
 
     def __str__(self):
         return "%s" % self.title
 
-
+class Resource(models.Model):
+    course = models.ForeignKey(Course, related_name='resources', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='resources/')
+    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+    approved = models.BooleanField(default=False)
+    folder = models.ForeignKey(Folder, related_name="resource", on_delete=models.CASCADE)

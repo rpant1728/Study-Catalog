@@ -17,21 +17,10 @@ class ProfileForm(ModelForm):
             'description': forms.Textarea(attrs={'placeholder': 'Enter description here', 'class' : 'form-field textarea'}),
         }
 
-class ResourceForm(ModelForm):
-    def __init__(self, courses, *args,**kwargs):
-        super(ResourceForm, self).__init__(*args, **kwargs) 
-        self.fields['course'].queryset = courses 
-        self.fields['course'].empty_label = "Select course"
-    
-    class Meta:
-        model = Resource
-        exclude = ['user', 'uploaded_on']
-        widgets = {
-            'title': forms.TextInput(attrs={'placeholder': 'Enter suitable title', 'class' : 'form-field text'}),
-            'description': forms.Textarea(attrs={'placeholder': 'Enter description', 'class' : 'form-field textarea'}),
-            'course': forms.Select(attrs={'class' : 'form-field choice'}),
-            'file': forms.FileInput(attrs={'class' : 'form-field file'}),
-        }
+class ResourceForm(forms.Form):
+    files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    course = forms.CharField(widget=forms.HiddenInput(attrs={'class': 'course-id'}))
+    folder = forms.CharField(widget=forms.HiddenInput(attrs={'class': 'folder-id'}))
 
 class CourseForm(ModelForm):
     def __init__(self, *args,**kwargs):

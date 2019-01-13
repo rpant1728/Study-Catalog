@@ -1,0 +1,41 @@
+index.html 
+
+   <li id="search-3" class="widget widget_search">
+      <form role="search" method="post" action="{% url "search" %}" id="searchform" class="searchform">
+        {% csrf_token %}
+        <div>
+          <label class="col-form-label" for="s">{{ form.searchstring.label_tag }}</label>
+          <input type="text" value="" name="searchstring" id="s">
+          <input type="submit" id="searchsubmit" value="Search">
+        </div>
+      </form></li>
+
+views.py
+
+def Search(request):
+	if request.method == "POST":
+		form = SearchForm(request.POST)
+		if form.is_valid():
+			name = form.cleaned_data['searchstring']
+			print(name)
+			faculty = Faculty.objects.filter(first_name__contains=name)
+			for fac in faculty:
+				return redirect(reverse('faculty-detail', args=(fac.id,)))
+	else:
+		form = SearchForm()
+
+def index(request):
+	form = SearchForm()
+	dep = Department.objects.all
+	return render(request, 'index.html',context={'dep': dep, 'form': form,})
+
+urls.py
+
+url(r'^search/$', views.Search, name='search'),
+
+forms.py
+
+from django import forms
+
+class SearchForm(forms.Form):
+	searchstring = forms.CharField(max_length=50)		

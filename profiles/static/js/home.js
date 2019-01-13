@@ -138,7 +138,7 @@ $(document).ready(function(){
         return false;
     });     
 
-    $( ".delete_post").on('click', function(){
+    $(".delete_post").on('click', function(){
         console.log("Test");
         var $this = $(this);
         var post_id = $this.attr('id').split('-')[1];
@@ -156,7 +156,7 @@ $(document).ready(function(){
         return false;
     });   
 
-    $( "#post").on('click', function(){
+    $("#post").on('click', function(){
         var title = $('#title').val();
         var data = $('#data').val();
         $.ajax({
@@ -196,19 +196,11 @@ $(document).ready(function(){
 
     $('#create-course').on("click", function() {
         $('#course-form').show();
-        $('#resource-form').hide();
-        $('#admin-request').hide();
-    });
-
-    $('#upload-resource').on("click", function() {
-        $('#course-form').hide();
-        $('#resource-form').show();
         $('#admin-request').hide();
     });
 
     $('#request-admin').on("click", function() {
         $('#course-form').hide();
-        $('#resource-form').hide();
         $('#admin-request').show();
     });
 
@@ -229,4 +221,20 @@ $(document).ready(function(){
         });
         return false;
     });
+
+    $("#select-course").change(function(){ 
+        var course = $(this).val();  
+        $.ajax({ 
+          type: "POST", 
+          url: "folders_url", 
+          data: {
+            'csrfmiddlewaretoken': token,
+            'course': course,
+          },
+          success: function(result){ 
+            $("#divid").load(" #divid");
+          }
+        });
+  
+      });
 });

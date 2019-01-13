@@ -1,7 +1,7 @@
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
-from profiles.models import Post, Comment, Profile, Course, Resource
+from profiles.models import Post, Comment, Profile, Resource, Course, Folder
 from profiles.forms import ProfileForm, ResourceForm, CourseForm
 from django.views import generic
 from django.urls import reverse
@@ -14,10 +14,9 @@ def home(request):
 	if profile.count() == 0:
 		return HttpResponseRedirect(reverse("edit-profile"))
 	all_posts = Post.objects.all()
-	courses = Course.objects.filter(Q(department=profile[0].department) | Q(department__contains="OT"))
-	resource_form = ResourceForm(courses)
+	courses = Course.objects.all()
 	course_form = CourseForm()
-	template_data = {'posts' : all_posts, 'res_form': resource_form, 'course_form': course_form}
+	template_data = {'posts' : all_posts, 'courses': courses, 'course_form': course_form}
 	return render(request, 'home.html', template_data)
 
 def post_new(request):
@@ -37,12 +36,10 @@ def post_delete(request):
 	if request.method == "POST":
 		post_id = request.POST['post_id']
 		post = Post.objects.get(id=post_id)
-		comments = Comment.objects.filter(post = post)
-
+		comments = Comment.objects.filter(post=post)
 		for comment in comments.all():
 			comment.delete()
-
-		post.delete();
+		post.delete()
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'home.html', template_data)
@@ -124,15 +121,16 @@ def post_detail(request, pk):
 	return render(request, 'post/post_detail.html', context={'post': post[0]}) 
 
 def upload_resource(request):
-	profile = Profile.objects.filter(user=request.user)
-	courses = Course.objects.filter(department=profile[0].department)
-	user = request.user
-	resource = Resource(user=user, uploaded_on=timezone.now())
-	if request.method == "POST":
-		form = ResourceForm(courses, request.POST, request.FILES, instance=resource)
-		if form.is_valid():
-			form.save()
-	return HttpResponseRedirect(reverse("home"))
+	form = ResourceForm(request.POST, request.FILES)
+	print(request.FILES)
+	print(request.POST)
+	if form.is_valid():
+		for file1 in request.FILES.getlist('files'):
+			resource = Resource(file=file1, approved=False, user=request.user)
+			resource.course = Course.objects.get(id=request.POST['course'])
+			resource.folder = Folder.objects.get(id=request.POST['folder'])
+			resource.save()
+	return HttpResponseRedirect(reverse("folder-detail", args=(request.POST['course'], request.POST['folder'],)))
 
 def create_course(request):
 	course = Course(approved=False)
@@ -147,9 +145,9 @@ def create_course(request):
 
 def catalog(request):
 	profile = Profile.objects.filter(user=request.user).first()
-	resources = Resource.objects.filter(course__department__contains=profile.department, approved=True )
+	courses = Course.objects.all()
 	template_data = dict()
-	template_data['resources'] = resources
+	template_data['courses'] = courses
 	all_course_requests = Course.objects.filter(approved=False)
 	all_resource_requests = Resource.objects.filter(approved=False)
 	all_admin_requests = Profile.objects.filter(admin_request=True)
@@ -235,3 +233,36 @@ def reject_admin(request):
 		user.admin_request = False
 		user.save()
 	return HttpResponseRedirect(reverse("catalog"))
+
+def create_folder(request):
+	folder = Folder()
+	folder.title = request.POST['title']
+	folder.course = Course.objects.get(id=request.POST['course_id'])
+	if not 'folder_id' in request.POST:
+		folder.root = True
+	folder.save()
+	if 'folder_id' in request.POST:
+		curr_folder = Folder.objects.get(id=request.POST['folder_id'])
+		curr_folder.folders.add(folder)
+	return HttpResponse("success")
+
+def folders(request):
+	course = Course.objects.filter(name=request.POST['course'])[0]
+	folders = course.folders.all()
+	return HttpResponse(folders)
+
+def course_detail(request, pk):
+	form = ResourceForm()
+	course = Course.objects.get(id=pk)
+	folders = course.folders.filter(root=True)
+	template_data = {'folders' : folders, 'course': course, 'root': True, 'form': form}
+	return render(request, 'filesystem.html', template_data)  
+
+def folder_detail(request, pk, pk1):
+	form = ResourceForm()
+	course = Course.objects.get(id=pk)
+	folder = Folder.objects.get(id=pk1)
+	folders = folder.folders.all()
+	resources = Resource.objects.filter(folder__id=folder.id, approved=True)
+	template_data = {'folders' : folders, 'resources' : resources, 'course': course, 'root': False, 'folder': folder, 'form': form}
+	return render(request, 'filesystem.html', template_data) 
