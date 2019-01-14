@@ -131,12 +131,10 @@ def post_detail(request, pk):
 
 def upload_resource(request):
 	form = ResourceForm(request.POST, request.FILES)
-	print(request.FILES)
-	print(request.POST)
 	if form.is_valid():
 		for file1 in request.FILES.getlist('files'):
-			resource.title = file1.name
 			resource = Resource(file=file1, approved=False, user=request.user)
+			resource.title = file1.name
 			resource.course = Course.objects.get(id=request.POST['course'])
 			resource.folder = Folder.objects.get(id=request.POST['folder'])
 			resource.save()
