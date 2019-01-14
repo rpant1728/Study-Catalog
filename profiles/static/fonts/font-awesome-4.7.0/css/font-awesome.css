@@ -31,6 +31,9 @@
 .fa-3x {
   font-size: 3em;
 }
+.fa {
+  color: blue !important;
+}
 .fa-4x {
   font-size: 4em;
 }

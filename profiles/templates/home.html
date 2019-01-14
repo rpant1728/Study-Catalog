@@ -3,16 +3,6 @@
 {% block content %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>
-        var token = "{{csrf_token}}";
-        var vote_url = "{% url 'post_votes' %}";
-        var post_url = "{% url 'post_new' %}";
-        var post_delete = "{% url 'post_delete' %}";
-        var comment_url = "{% url 'comment_new' %}";
-        var admin_request_url = "{% url 'admin-request' %}";
-    </script>
-    <script src="{% static 'js/home.js' %}"></script>
 
     <div class="container-fluid gedf-wrapper">
         <div class="row">
@@ -53,7 +43,7 @@
                         <div class="card-header">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a data-toggle="tab" href="#post-tab">Post to blog</a></li>
-                                <li><a data-toggle="tab" href="#files-tab">Upload to portal</a></li>
+                                <li><a data-toggle="tab" href="#files-tab">Create Course</a></li>
                             </ul>              
                             <div class="tab-content">
                                 <div id="post-tab" class="tab-pane fade in active">

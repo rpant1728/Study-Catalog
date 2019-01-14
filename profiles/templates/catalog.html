@@ -5,15 +5,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>
-        var token = "{{csrf_token}}";
-        var approve_course_url = "{% url 'approve-course' %}";
-        var reject_course_url = "{% url 'reject-course' %}";
-        var approve_resource_url = "{% url 'approve-resource' %}";
-        var reject_resource_url = "{% url 'reject-resource' %}";
-        var approve_admin_url = "{% url 'approve-admin' %}";
-        var reject_admin_url = "{% url 'reject-admin' %}";
-    </script>
     <script src="{% static 'js/catalog.js' %}"></script>
     {% if is_admin %}
         <div class="course-requests">

@@ -88,9 +88,14 @@ class Folder(models.Model):
         return "%s" % self.title
 
 class Resource(models.Model):
+    title = models.CharField(max_length=200)
     course = models.ForeignKey(Course, related_name='resources', on_delete=models.CASCADE)
     file = models.FileField(upload_to='resources/')
     user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
     uploaded_on = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
     folder = models.ForeignKey(Folder, related_name="resource", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "%s" % self.title
+

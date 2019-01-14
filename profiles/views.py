@@ -8,9 +8,17 @@ from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.db import connection
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 def home(request):
 	profile = Profile.objects.filter(user_id=request.user.id)
+	user = request.user
+	if not request.user.is_authenticated:
+		all_posts = Post.objects.all()
+		courses = Course.objects.all()
+		course_form = CourseForm()
+		template_data = {'posts' : all_posts, 'courses': courses, 'course_form': course_form}
+		return render(request, 'home.html', template_data)
 	if profile.count() == 0:
 		return HttpResponseRedirect(reverse("edit-profile"))
 	all_posts = Post.objects.all()
@@ -18,6 +26,7 @@ def home(request):
 	course_form = CourseForm()
 	template_data = {'posts' : all_posts, 'courses': courses, 'course_form': course_form}
 	return render(request, 'home.html', template_data)
+	
 
 def post_new(request):
 	if request.method == "POST":
@@ -126,6 +135,7 @@ def upload_resource(request):
 	print(request.POST)
 	if form.is_valid():
 		for file1 in request.FILES.getlist('files'):
+			resource.title = file1.name
 			resource = Resource(file=file1, approved=False, user=request.user)
 			resource.course = Course.objects.get(id=request.POST['course'])
 			resource.folder = Folder.objects.get(id=request.POST['folder'])
@@ -266,3 +276,22 @@ def folder_detail(request, pk, pk1):
 	resources = Resource.objects.filter(folder__id=folder.id, approved=True)
 	template_data = {'folders' : folders, 'resources' : resources, 'course': course, 'root': False, 'folder': folder, 'form': form}
 	return render(request, 'filesystem.html', template_data) 
+
+
+def SearchListView(request):
+	qs = Post.objects.all()
+	qsr = Resource.objects.all()
+	keywords = request.GET.get('q')
+	template_data = dict()
+	if keywords:
+		query = SearchQuery(keywords)
+		vector = SearchVector('title', 'content')
+		qs = qs.annotate(search=vector).filter(search=query)
+		qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+		query = SearchQuery(keywords)
+		vector = SearchVector('title')
+		qsr = qsr.annotate(search=vector).filter(search=query)
+		qsr = qsr.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+	template_data['post_list'] = qs
+	template_data['resource_list'] = qsr
+	return render(request, 'profiles/search.html', template_data)

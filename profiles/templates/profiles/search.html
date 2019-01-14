@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+    <script>
+        var token = "{{csrf_token}}";
+        var folder_url = "{% url 'create-folder' %}";
+        var root = false;
+        var course = "{{course.id}}";
+        var folder = "{{folder.id}}";
+    </script>            
+    <script src="{% static 'js/filesystem.js' %}"></script>   
+    <link rel="stylesheet" type="text/css" href="{% static 'css/filesystem.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
+    <div class="card gedf-card">
+        <div class="card-header">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#post-tab">Posts</a></li>
+                <li><a data-toggle="tab" href="#resource-tab">Resources</a></li>
+            </ul>              
+            <div class="tab-content">
+                <div id="post-tab" class="tab-pane fade in active">
+                    <br>
+                    <div class="posts">
+                        {% include "post.html" with posts=post_list %}
+                    </div>
+                    {% if post_list.count == 0 %}
+                        No Results
+                    {% endif %}
+                </div>
+                <div id="resource-tab" class="tab-pane fade">
+                    <br>
+                    {% for resource in resource_list %}
+                        <hr>
+                        <div class="item row">
+                            <div class="col-sm-6">
+                                <i class="fa fa-file" aria-hidden="true"></i>
+                                <a href="{{resource.file.url}}">{{resource.title}}</a>
+                            </div> 
+                            <div class="col-sm-6">
+                                {{resource.uploaded_on}}
+                            </div> 
+                        </div>
+                    {% endfor %}
+                    {% if resource_list.count == 0 %}
+                        No Results
+                    {% endif %}
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

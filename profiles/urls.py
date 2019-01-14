@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^admin-request/', views.admin_request, name='admin-request'),
     url(r'^create-folder/', views.create_folder, name='create-folder'),
     url(r'^folders/$', views.folders, name='folders'),
+    url(r'^search/$', views.SearchListView, name='search_list_view'),
 ]
