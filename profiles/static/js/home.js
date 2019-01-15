@@ -9,7 +9,6 @@ $(document).ready(function(){
             }
             return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
         }
-        console.log(rgb2hex($("#downarrow-"+id).css("color")));
         if( rgb2hex($("#uparrow-"+id).css("color")) == "#ff0000" ){
             $.ajax({
                 type:"POST",
@@ -139,7 +138,6 @@ $(document).ready(function(){
     });     
 
     $(".delete_post").on('click', function(){
-        console.log("Test");
         var $this = $(this);
         var post_id = $this.attr('id').split('-')[1];
         $.ajax({
@@ -202,6 +200,18 @@ $(document).ready(function(){
     $('#request-admin').on("click", function() {
         $('#course-form').hide();
         $('#admin-request').show();
+    });
+
+    $(document).on('click','.show_comments',function (e){
+        var $this = $(this);
+        var id = $this.attr('id').split('-')[1];
+        if($this.val()=="0"){
+            $("#comments-"+id).attr('hidden', true);
+            $this.val("1");
+        }else{
+            $("#comments-"+id).attr('hidden', false);
+            $this.val("0");
+        }
     });
 
     $(".admin-req").on('click', function(){
