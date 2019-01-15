@@ -141,7 +141,7 @@ def upload_resource(request):
 	return HttpResponseRedirect(reverse("folder-detail", args=(request.POST['course'], request.POST['folder'],)))
 
 def create_course(request):
-	course = Course(approved=False)
+	course = Course(approved=False, admin=request.user)
 	if request.method == "POST":
 		form = CourseForm(request.POST, instance=course)
 		if form.is_valid():
@@ -153,7 +153,7 @@ def create_course(request):
 
 def catalog(request):
 	profile = Profile.objects.filter(user=request.user).first()
-	courses = Course.objects.all()
+	courses = Course.objects.filter(approved=True)
 	template_data = dict()
 	template_data['courses'] = courses
 	all_course_requests = Course.objects.filter(approved=False)
@@ -161,6 +161,7 @@ def catalog(request):
 	all_admin_requests = Profile.objects.filter(admin_request=True)
 	if profile.admin:
 		template_data['is_admin'] = True
+		template_data['all_admin'] = True
 		template_data['course_requests'] = all_course_requests
 		template_data['resource_requests'] = all_resource_requests
 		template_data['admin_requests'] = all_admin_requests
@@ -245,6 +246,8 @@ def reject_admin(request):
 def create_folder(request):
 	folder = Folder()
 	folder.title = request.POST['title']
+	if folder.title == '':
+		folder.title = "New Folder"
 	folder.course = Course.objects.get(id=request.POST['course_id'])
 	if not 'folder_id' in request.POST:
 		folder.root = True
@@ -268,11 +271,16 @@ def course_detail(request, pk):
 
 def folder_detail(request, pk, pk1):
 	form = ResourceForm()
+	profile = Profile.objects.filter(user=request.user).first()
 	course = Course.objects.get(id=pk)
 	folder = Folder.objects.get(id=pk1)
 	folders = folder.folders.all()
 	resources = Resource.objects.filter(folder__id=folder.id, approved=True)
 	template_data = {'folders' : folders, 'resources' : resources, 'course': course, 'root': False, 'folder': folder, 'form': form}
+	if profile.admin:
+		template_data['all_admin'] = True
+	else:
+		template_data['all_admin'] = False
 	return render(request, 'filesystem.html', template_data) 
 
 
@@ -293,3 +301,23 @@ def SearchListView(request):
 	template_data['post_list'] = qs
 	template_data['resource_list'] = qsr
 	return render(request, 'profiles/search.html', template_data)
+
+def delete_resource(request, pk):
+	resource = Resource.objects.filter(id=pk)
+	resource.delete()
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def recursive_delete(pk):
+	folder = Folder.objects.filter(id=pk)
+	resources = Resource.objects.filter(folder__in=folder)
+	for resource in resources.all():
+		resource.delete()
+	folders = Folder.objects.filter(folder__in=folder)
+	for f in folders.all():
+		recursive_delete(f.id)
+	folder.delete()
+
+def delete_folder(request, pk):
+	recursive_delete(pk)
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+	

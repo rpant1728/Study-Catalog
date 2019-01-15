@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="{% static 'js/catalog.js' %}"></script>
-    {% if is_admin %}
+    {% if all_admin %}
         <div class="course-requests">
         Course Requests
             {% for course in course_requests %}
@@ -20,23 +20,40 @@
                 <br>
             {% endfor %}
         </div>
-        <hr>
-        <br>
+        <hr style="height:1px;border:none;color:#333;background-color:#333;" />
         <div class="resource-requests">
             Resource Requests
+            <br>
                 {% for resource in resource_requests %}
-                    <div id="resource-{{resource.id}}">
-                        <p id="name-{{resource.id}}">{{ resource.title }}</p>
-                        <a class="approve-resource" id="approve-{{resource.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
-                        <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
-                        <a class="reject-resource" id="reject-{{resource.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
-                        <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
-                        <br>
-                    </div>
+                    {% if resource.course.admin.username == user.username or all_admin %}
+                    <hr>
+                        <div class="item row">   
+                            <div class="col-sm-6">
+                                <div class="col-sm-3">
+                                    <div id="resource-{{resource.id}}">
+                                        <a href="{{resource.file.url}}" id="name-{{resource.id}}">{{ resource.title }}</a>
+                                        <a class="approve-resource" id="approve-{{resource.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                                        <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
+                                        <a class="reject-resource" id="reject-{{resource.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                        <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    Course: <a href="{% url 'course-detail' resource.course.id %}">{{ resource.course }}</a>
+                                </div>
+                                <div class="col-sm-3">
+                                    Folder: <a href="{% url 'folder-detail' resource.course.id resource.folder.id %}">{{ resource.folder.title }}</a>
+                                </div>
+                                <div class="col-sm-3">
+                                    Uploaded By: <a href="{% url 'profile-detail' resource.user.id %}">{{ resource.user.username }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
                 {% endfor %}
         </div>
-        <hr>
-        <br>
+        <hr style="height:1px;border:none;color:#333;background-color:#333;" />
         <div class="admin-requests">
             Admin Requests
                 {% for profile in admin_requests %}
@@ -51,10 +68,11 @@
                 {% endfor %}
         </div>
     {% endif %}
-    <hr>
-    <br>
+    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
     Courses<br>
+    <div class="course">
     {% for course in courses %}
         <a href="{% url 'course-detail' course.id %}">{{course.name}}</a><br>
     {% endfor %}
+    </div>
 {% endblock %}

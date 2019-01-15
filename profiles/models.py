@@ -52,7 +52,7 @@ class Course(models.Model):
     name = models.CharField(max_length=200)
     code = models.CharField(max_length=20, blank=True)
     approved = models.BooleanField(default=False)
-
+    admin = models.ForeignKey(User, related_name='admin', on_delete=models.CASCADE, null=True)
     def __str__(self):
         return "%s" % self.name
 
@@ -78,7 +78,7 @@ class Profile(models.Model):
         return "%s %s" % (self.first_name, self.last_name)
 
 class Folder(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, default='New Folder')
     folders = models.ManyToManyField("self", symmetrical=False)
     course = models.ForeignKey(Course, related_name="folders", on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)

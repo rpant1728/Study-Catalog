@@ -531,3 +531,16 @@ iframe {
     width: 100%;
   }
 }
+.numberCircle {
+  border-radius: 50%;
+  behavior: url(PIE.htc);
+  /* remove if you don't care about IE8 */
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  background: #fff;
+  border: 2px solid #0000FF;
+  color: rgb(14, 11, 204);
+  text-align: center;
+  font: 32px Arial, sans-serif;
+}

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $(".approve-course").on('click', function(){
+    $(document).on('click','.approve-course',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         $.ajax({
@@ -11,11 +11,12 @@ $(document).ready(function(){
             },
             success: function(){
                 $('.course-requests').load(location.href+" .course-requests", "");
+                $('.course').load(location.href+" .course", "");
             }
         });
     });
 
-    $(".reject-course").on('click', function(){
+    $(document).on('click','.reject-course',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         $.ajax({
@@ -27,11 +28,12 @@ $(document).ready(function(){
             },
             success: function(){
                 $('.course-requests').load(location.href+" .course-requests", "");
+                $('.course').load(location.href+" .course", "");
             }
         });
     });
 
-    $(".approve-resource").on('click', function(){
+    $(document).on('click','.approve-resource',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         $.ajax({
@@ -43,11 +45,12 @@ $(document).ready(function(){
             },
             success: function(){
                 $('.resource-requests').load(location.href+" .resource-requests", "");
+                $('.course').load(location.href+" .course", "");
             }
         });
     });
 
-    $(".reject-resource").on('click', function(){
+    $(document).on('click','.reject-resource',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         console.log(id);
@@ -60,11 +63,12 @@ $(document).ready(function(){
             },
             success: function(){
                 $('.resource-requests').load(location.href+" .resource-requests", "");
+                $('.course').load(location.href+" .course", "");
             }
         });
     });
 
-    $(".approve-admin").on('click', function(){
+    $(document).on('click','.approve-admin',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         $.ajax({
@@ -76,11 +80,12 @@ $(document).ready(function(){
             },
             success: function(){
                 $('.admin-requests').load(location.href+" .admin-requests", "");
+                $('.course').load(location.href+" .course", "");
             }
         });
     });
 
-    $(".reject-admin").on('click', function(){
+    $(document).on('click','.reject-admin',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         console.log(id);
@@ -93,6 +98,7 @@ $(document).ready(function(){
             },
             success: function(){
                 $('.admin-requests').load(location.href+" .admin-requests", "");
+                $('.course').load(location.href+" .course", "");
             }
         });
     });

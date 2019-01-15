@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^create-folder/', views.create_folder, name='create-folder'),
     url(r'^folders/$', views.folders, name='folders'),
     url(r'^search/$', views.SearchListView, name='search_list_view'),
+    url(r'^delete-resource/(?P<pk>\d+)$', views.delete_resource, name='delete-resource'),
+    url(r'^delete-folder/(?P<pk>\d+)$', views.delete_folder, name='delete-folder'),
 ]

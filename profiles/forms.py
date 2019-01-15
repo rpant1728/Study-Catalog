@@ -30,7 +30,7 @@ class CourseForm(ModelForm):
 
     class Meta:
         model = Course
-        exclude = ['approved']
+        exclude = ['approved', 'admin']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter course title', 'class' : 'form-field text'}),
             'code': forms.TextInput(attrs={'placeholder': 'Enter course code (optional)', 'class' : 'form-field text'}),
