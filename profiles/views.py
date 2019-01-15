@@ -53,6 +53,16 @@ def post_delete(request):
 	template_data = {'posts' : all_posts}
 	return render(request, 'home.html', template_data)
 
+def edit_posts(request):
+	if request.method == "POST":
+		post_id = request.POST['post_id']
+		post = Post.objects.get(id=post_id)
+		post.title = request.POST['title']
+		post.created_on = timezone.now()
+		post.content = request.POST['data']
+		post.save()
+	return HttpResponseRedirect(reverse('post-detail', args=(post.id,)))
+
 def comment_new(request):
 	if request.method == "POST":
 		comment = Comment()
@@ -65,6 +75,18 @@ def comment_new(request):
 	all_posts = Post.objects.all()
 	template_data = {'posts' : all_posts}
 	return render(request, 'home.html', template_data)
+
+
+def comment_delete(request):
+	if request.method == "POST":
+		comment_id = request.POST['comment_id']
+		comment = Comment.objects.get(id=comment_id)
+		comment.delete()
+		
+	all_posts = Post.objects.all()
+	template_data = {'posts' : all_posts}
+	return render(request, 'home.html', template_data)
+
 
 def user_posts(request, pk):
 	user = User()

@@ -16,9 +16,11 @@
 		var vote_url = "{% url 'post_votes' %}";
         var post_url = "{% url 'post_new' %}";
         var post_delete = "{% url 'post_delete' %}";
+        var comment_delete = "{% url 'comment_delete' %}";
         var comment_url = "{% url 'comment_new' %}";
         var upload_url = "{% url 'upload-resource' %}";
         var admin_request_url = "{% url 'admin-request' %}";
+        var edit_post = "{% url 'edit_post' %}";
     </script>
     <script src="{% static 'js/home.js' %}"></script>
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -70,4 +72,3 @@
 	{% block profile %}{% endblock profile %}
 	{% block content %}{% endblock content %}
 </body>
-

@@ -5,22 +5,35 @@
 {% load staticfiles %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <script>
-        var token = "{{csrf_token}}";
-        var vote_url = "{% url 'post_votes' %}";
-        var post_url = "{% url 'post_new' %}";
-        var post_delete = "{% url 'post_delete' %}";
-        var comment_url = "{% url 'comment_new' %}";
-        var admin_request_url = "{% url 'admin-request' %}";
-    </script>
-    <script src="{% static 'js/home.js' %}"></script>
-
     <a href="{% url 'home' %}">Back</a>
     <div class="row">
         <div class="col-sm-3"></div>
         <div class="col-sm-6">
+            <div id="edit_post_form" >
+                <div class="tab-pane fade in active">
+                    <br>
+                    <form action="{% url 'edit_post' %}" method="POST" >
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <label class="sr-only" for="message">post</label>
+                            Title
+                            <textarea class="form-control" id="title" rows="1" name="title" ></textarea>
+                            <br>
+                            Content
+                            <textarea class="form-control" id="data" rows="3" name="data" value="{{ post.content }}"></textarea>
+                            <br>
+                            <input type="hidden" name="post_id" value="{{post.id}}" >
+                        </div>
+                        <div class="btn-toolbar justify-content-between">
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary" id="save-{{post.id}}">Save</button>
+                                <button  type="reset" class="btn btn-primary"  onclick="closeform()" >Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="post_format">
             <div class="card gedf-card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -44,34 +57,33 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-ellipsis-h"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
-                                        <div class="h6 dropdown-header">Configuration</div>
-                                        <div class="dropdown-item">
-                                            {% if post.author == user %}
-                                            <form action="{% url 'post_delete' %}" method="POST" enctype="multipart/form-data">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="post_id" value="{{post.id}}" />
-                                                <button type="submit">Delete</button>
-                                            </form>
-                                            {% endif %}
+                               <div class="dropdown">
+                                        <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                            <div class="h6 dropdown-header">Configuration</div>
+                                            <div class="dropdown-item">
+                                                {% if post.author == user %}
+                                                <form action="{% url 'post_delete' %}" method="POST" enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="post_id" value="{{post.id}}" />
+                                                    <button type="submit">Delete</button>
+                                                </form>
+                                                <button type='btn' onclick="openform()">Edit</button>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     <div class="card-body">
                         <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.created_on }}</div>
                         <a class="card-link" href="{% url 'post-detail' post.id %}">
-                            <h5 class="card-title">{{ post.title }}</h5>
-                        </a>
-                        <p class="card-text">
-                            {{ post.content }}
-                        </p>
+                            <h5 class="card-title" id="title_id" >{{ post.title }}</h5>
+                            </a>
+                            <p class="card-text"  id="data_id">{{ post.content }}</p>
                     </div>
                     <div class="card-footer">
                         {% if user.is_authenticated %}
@@ -94,52 +106,94 @@
                 <br>
                 <div id="comments-{{post.id}}">
                 {% for comment in post.comments.all %}
-                    <div class="row">
-                        <div class="col-sm-auto">
-                            <div class="thumbnail">
-                                {% if comment.author.profile.all.count == 0 %}
-                                    <img class="img-responsive user-photo" height="75px" width="75px" src="{% static 'images/default.png' %}"/>
-                                {% else %}
-                                    {% for profile in comment.author.profile.all %}
-                                        <img class="img-responsive user-photo" src="{{profile.profile_picture.url}}">     
-                                    {% endfor %}
-                                {% endif %}
-                            </div> 
-                        </div> 
-                        <div class="col">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <strong>{{comment.author}}</strong> <span class="text-muted">commented on {{comment.created_on}}</span>
-                                </div>
-                                <div class="panel-body">
-                                    {{comment.content}}
+                        <div id="comment-{{comment.id}}">
+                            <div class="row">
+                                <div class="col-sm-auto">
+                                    <div class="thumbnail">
+                                        {% if comment.author.profile.all.count == 0 %}
+                                            <img class="img-responsive user-photo" height="75px" width="75px" src="{% static 'images/default.png' %}"/>
+                                        {% else %}
+                                            {% for profile in comment.author.profile.all %}
+                                                <img class="img-responsive user-photo" src="{{profile.profile_picture.url}}">     
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div> 
+                                </div> 
+                                <div class="col">
+                                    <div class="panel panel-default">
+                                        <div class="card-header">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="panel-heading">
+                                                    {% if comment.author.profile.all.count != 0 %}
+                                                        <a href="{% url 'profile-detail' comment.author.id %}"><strong>{{comment.author}}</strong></a> <span class="text-muted">commented on {{comment.created_on}}</span>
+                                                    {% else %}
+                                                        <strong>{{comment.author}}</strong> <span class="text-muted">commented on {{comment.created_on}}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fa fa-ellipsis-h"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                                            <div class="h6 dropdown-header">Configuration</div>
+                                                            <div class="dropdown-item">
+                                                                {% if comment.author == user %}
+                                                                    <a class="delete_comment" id="delete_comment-{{comment.id}}" href="#" >Delete</a><br>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            {{comment.content}}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <br>
                         </div>
-                    </div>
+                    {% endfor %}
+                    {% if user.is_authenticated %}
+                    <form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <!-- <input type="hidden" name="post-id" id="comment.id-{{post.id}}" value="{{post.id}}"> -->
+                            <textarea class="form-control" id="data-{{post.id}}" rows="3" name="data" placeholder="Write a comment!" required></textarea>
+                        </div>
+                        <div class="btn-toolbar justify-content-between">
+                            <div class="btn-group">
+                                <a class="comment" id="comment-{{post.id}}"><button type="submit" class="btn btn-primary">Comment</button></a>
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
                     <br>
-                {% endfor %}
-                {% if user.is_authenticated %}
-                <form action="{% url 'comment_new' %}" method="POST" enctype="multipart/form-data">
-                    <div class="form-group">
-                        {% csrf_token %}
-                        <!-- <input type="hidden" name="post-id" id="comment.id-{{post.id}}" value="{{post.id}}"> -->
-                        <textarea class="form-control" id="data-{{post.id}}" rows="3" name="data" placeholder="Write a comment!"></textarea>
-                    </div>
-                    <div class="btn-toolbar justify-content-between">
-                        <div class="btn-group">
-                            <a class="comment" id="comment-{{post.id}}"><button type="submit" class="btn btn-primary">Comment</button></a>
-                        </div>
-                    </div>
-                </form>
-                {% endif %}
-                <br>
+                </div>
+                {% post_to_facebook post "Post to Facebook!" %}
+                {% post_to_gplus post "Post to Google+!" %}
+                {% send_email post.title "New Post: {{post.title}}. Check it out!" post "Share via email" %}
             </div>
-            {% post_to_facebook post "Post to Facebook!" %}
-            {% post_to_gplus post "Post to Google+!" %}
-            {% send_email post.title "New Post: {{post.title}}. Check it out!" post "Share via email" %}
         </div>
         <div class="col-sm-3"></div>
     </div>
-{% endblock %}
 
+    <script>
+    document.getElementById("edit_post_form").style.display = "none";
+
+    function closeform(){
+        document.getElementById("edit_post_form").style.display = "none";
+        document.getElementById("post_format").style.display = "block";
+
+    }
+    function openform(){
+        document.getElementById("title").defaultValue = document.getElementById("title_id").innerHTML;
+        document.getElementById("data").defaultValue = document.getElementById("data_id").innerHTML;;
+        document.getElementById("edit_post_form").style.display = "block";
+        document.getElementById("post_format").style.display = "none";
+    }
+    </script>
+
+{% endblock %}
