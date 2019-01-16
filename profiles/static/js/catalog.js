@@ -2,12 +2,20 @@ $(document).ready(function(){
     $(document).on('click','.approve-course',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
+        var x = document.getElementById("course_name1").innerHTML;
+        console.log(x);
+        var filename = prompt("Please rename your course", x);
+        filename = filename.trim();
+        if (filename == null || filename == "")
+            return; 
+
         $.ajax({
             type:"POST",
             url: approve_course_url,
             data: {
                 'csrfmiddlewaretoken': token,
                 'course_id': id,
+                'course_name' : filename,
             },
             success: function(){
                 $('.course-requests').load(location.href+" .course-requests", "");
@@ -36,12 +44,20 @@ $(document).ready(function(){
     $(document).on('click','.approve-resource',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
+        var x = document.getElementById("resource_title").innerHTML;
+        console.log(x);
+        var filename = prompt("Please rename your file", x);
+        filename = filename.trim();
+        if (filename == null || filename == "")
+            return; 
+
         $.ajax({
             type:"POST",
             url: approve_resource_url,
             data: {
                 'csrfmiddlewaretoken': token,
                 'resource_id': id,
+                'resource_name' : filename,
             },
             success: function(){
                 $('.resource-requests').load(location.href+" .resource-requests", "");

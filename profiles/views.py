@@ -205,6 +205,7 @@ def approve_course(request):
 		course_id = request.POST['course_id']
 		course = Course.objects.get(id=course_id)
 		course.approved = True
+		course.name = request.POST['course_name']
 		course.save()
 	return HttpResponseRedirect(reverse("catalog"))
 
@@ -225,6 +226,7 @@ def approve_resource(request):
 	if request.method == "POST":
 		resource_id = request.POST['resource_id']
 		resource = Resource.objects.get(id=resource_id)
+		resource.title = request.POST['resource_name']
 		resource.approved = True
 		resource.save()
 	return HttpResponseRedirect(reverse("catalog"))

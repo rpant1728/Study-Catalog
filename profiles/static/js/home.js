@@ -222,14 +222,14 @@ $(document).ready(function(){
         $('#admin-request').show();
     });
 
-    $(document).on('click','.show_comments',function (e){
+     $(document).on('click','.show_comments',function (e){
         var $this = $(this);
         var id = $this.attr('id').split('-')[1];
         if($this.val()=="0"){
-            $("#comments-"+id).attr('hidden', true);
+            $("#com-"+id).attr('hidden', true);
             $this.val("1");
         }else{
-            $("#comments-"+id).attr('hidden', false);
+            $("#com-"+id).attr('hidden', false);
             $this.val("0");
         }
     });

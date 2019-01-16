@@ -10,14 +10,33 @@
         <div class="course-requests">
         Course Requests
             {% for course in course_requests %}
-                <div id="course-{{course.id}}">
-                    <p id="name-{{course.id}}">{{ course.name }}</p>
-                    <a class="approve-course" id="approve-{{course.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
-                    <!-- <button class="approve-course" id="approve-{{course.id}}">Approve</button> -->
-                    <a class="reject-course" id="reject-{{course.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
-                    <!-- <button class="reject-course" id="reject-{{course.id}}">Reject</button> -->
+            <hr>
+            <div class="item row">   
+                <div class="col-sm-6">
+                    <div class="col-sm-3">
+                         <div id="course-{{course.id}}">
+                            <a id="name-{{course.id}}"><a id="course_name1">{{ course.name }}</a></a>
+                            <a class="approve-course" id="approve-{{course.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                            <!-- <button class="approve-course" id="approve-{{course.id}}">Approve</button> -->
+                            <a class="reject-course" id="reject-{{course.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                            <!-- <button class="reject-course" id="reject-{{course.id}}">Reject</button> -->
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        Department: <a>{{ course.department }}</a>
+                    </div>
+                    <div class="col-sm-3">
+                        Degree: <a>{{ course.degree }}</a>
+                    </div>
+                    <div class="col-sm-3">
+                        Course Code: <a>{{ course.code }}</a>
+                    </div>
+                    <div class="col-sm-3">
+                        Created By: <a href="{% url 'profile-detail' course.admin.id %}">{{ course.admin.username }}</a>
+                    </div>
                 </div>
-                <br>
+            </div>
+            <br>
             {% endfor %}
         </div>
         <hr style="height:1px;border:none;color:#333;background-color:#333;" />
@@ -31,7 +50,7 @@
                             <div class="col-sm-6">
                                 <div class="col-sm-3">
                                     <div id="resource-{{resource.id}}">
-                                        <a href="{{resource.file.url}}" id="name-{{resource.id}}">{{ resource.title }}</a>
+                                        <a href="{{resource.file.url}}" id="name-{{resource.id}}"><a id="resource_title">{{ resource.title }}</a></a>
                                         <a class="approve-resource" id="approve-{{resource.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
                                         <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
                                         <a class="reject-resource" id="reject-{{resource.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -75,4 +94,5 @@
         <a href="{% url 'course-detail' course.id %}">{{course.name}}</a><br>
     {% endfor %}
     </div>
+
 {% endblock %}
