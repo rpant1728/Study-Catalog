@@ -34,4 +34,6 @@ urlpatterns = [
     url(r'^search/$', views.SearchListView, name='search_list_view'),
     url(r'^delete-resource/(?P<pk>\d+)$', views.delete_resource, name='delete-resource'),
     url(r'^delete-folder/(?P<pk>\d+)$', views.delete_folder, name='delete-folder'),
+    url(r'^rename-resource/', views.rename_resource, name='rename-resource'),
+    url(r'^rename-folder/', views.rename_folder, name='rename-folder'),
 ]

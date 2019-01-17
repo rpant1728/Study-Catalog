@@ -345,3 +345,19 @@ def delete_folder(request, pk):
 	recursive_delete(pk)
 	return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 	
+def rename_resource(request):
+	if request.method == "POST":
+		resource_id = request.POST['resource_id']
+		resource = Resource.objects.get(id=resource_id)
+		resource.title = request.POST['filename']
+		resource.save()
+	return HttpResponseRedirect(reverse("catalog"))
+
+
+def rename_folder(request):
+	if request.method == "POST":
+		folder_id = request.POST['folder_id']
+		folder = Folder.objects.get(id=folder_id)
+		folder.title = request.POST['foldername']
+		folder.save()
+	return HttpResponseRedirect(reverse("catalog"))

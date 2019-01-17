@@ -64,7 +64,7 @@
             <div class="item row">
                 <div class="col-sm-6">
                     <i class="fa fa-folder" aria-hidden="true"></i>
-                    <a href="{% url 'folder-detail' course.id folder.id %}">{{folder.title}}</a>
+                    <a href="{% url 'folder-detail' course.id folder.id %}" id="title_folder" >{{folder.title}}</a>
                 </div>
                 <div class="col-sm-6">
                     {{folder.created_on}}
@@ -73,6 +73,7 @@
                         <i class="fa fa-trash" aria-hidden="true">
                         </i>
                         </a>
+                        <a href="#" class="rename_folder" id="rename_folder-{{folder.id}}" >Rename</a>
                     {% endif %}
                 </div>  
             </div>
@@ -82,7 +83,7 @@
             <div class="item row">
                 <div class="col-sm-6">
                     <i class="fa fa-file" aria-hidden="true"></i>
-                    <a href="{{resource.file.url}}">{{resource.title}}</a>
+                    <a href="{{resource.file.url}}" id="title_resource" >{{resource.title}}</a>
                 </div> 
                 <div class="col-sm-6">
                     {{resource.uploaded_on}}
@@ -91,6 +92,7 @@
                         <i class="fa fa-trash" aria-hidden="true">
                         </i>
                         </a>
+                        <a href="#" class="rename_resource" id="rename_resource-{{resource.id}}" >Rename</a>
                     {% endif %}
                 </div> 
             </div>
