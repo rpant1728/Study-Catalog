@@ -51,6 +51,8 @@ $(document).ready(function(){
         if (filename == null || filename == "")
             return; 
 
+        var tags = prompt("Please enter tags for file", x);
+
         $.ajax({
             type:"POST",
             url: approve_resource_url,
@@ -58,6 +60,7 @@ $(document).ready(function(){
                 'csrfmiddlewaretoken': token,
                 'resource_id': id,
                 'resource_name' : filename,
+                'tag' : tags,
             },
             success: function(){
                 $('.resource-requests').load(location.href+" .resource-requests", "");

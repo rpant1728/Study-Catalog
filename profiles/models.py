@@ -90,6 +90,7 @@ class Folder(models.Model):
 
 class Resource(models.Model):
     title = models.CharField(max_length=200)
+    tag = models.CharField(max_length=200)
     course = models.ForeignKey(Course, related_name='resources', on_delete=models.CASCADE)
     file = models.FileField(upload_to='resources/')
     user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)

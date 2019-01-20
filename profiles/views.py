@@ -227,6 +227,7 @@ def approve_resource(request):
 		resource_id = request.POST['resource_id']
 		resource = Resource.objects.get(id=resource_id)
 		resource.title = request.POST['resource_name']
+		resource.tag = request.POST['tag']
 		resource.approved = True
 		resource.save()
 	return HttpResponseRedirect(reverse("catalog"))
@@ -318,7 +319,7 @@ def SearchListView(request):
 		qs = qs.annotate(search=vector).filter(search=query)
 		qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 		query = SearchQuery(keywords)
-		vector = SearchVector('title')
+		vector = SearchVector('title' , 'tag')
 		qsr = qsr.annotate(search=vector).filter(search=query)
 		qsr = qsr.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 	template_data['post_list'] = qs
