@@ -5,15 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>
-        var token = "{{csrf_token}}";
-        var vote_url = "{% url 'post_votes' %}";
-        var post_url = "{% url 'post_new' %}";
-        var post_delete = "{% url 'post_delete' %}";
-        var comment_url = "{% url 'comment_new' %}";
-        var admin_request_url = "{% url 'admin-request' %}";
-    </script>
-    <script src="{% static 'js/home.js' %}"></script>
+
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
