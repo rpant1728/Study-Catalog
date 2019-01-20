@@ -336,13 +336,14 @@ def recursive_delete(pk):
 	resources = Resource.objects.filter(folder__in=folder)
 	for resource in resources.all():
 		resource.delete()
-	folders = Folder.objects.filter(folder__in=folder)
+	folders = Folder.objects.filter(parent_folder=folder)
 	for f in folders.all():
 		recursive_delete(f.id)
 	folder.delete()
 
 def delete_folder(request, pk):
-	recursive_delete(pk)
+	folder = Folder.objects.filter(id=pk)
+	folder.delete()
 	return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 	
 def rename_resource(request):
@@ -352,7 +353,6 @@ def rename_resource(request):
 		resource.title = request.POST['filename']
 		resource.save()
 	return HttpResponseRedirect(reverse("catalog"))
-
 
 def rename_folder(request):
 	if request.method == "POST":
