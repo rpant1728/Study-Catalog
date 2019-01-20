@@ -79,7 +79,8 @@ class Profile(models.Model):
 
 class Folder(models.Model):
     title = models.CharField(max_length=200, default='New Folder')
-    folders = models.ManyToManyField("self", symmetrical=False)
+    # folders = models.ManyToManyField("self", symmetrical=False)
+    parent_folder = models.ForeignKey("self", related_name="subfolders", on_delete=models.CASCADE, null=True, blank=True)
     course = models.ForeignKey(Course, related_name="folders", on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
     root = models.BooleanField(default=False)

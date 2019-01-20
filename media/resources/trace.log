@@ -1,0 +1,2 @@
+01:26:47.136068 git.c:561               trace: exec: 'git-co' 'master'
+01:26:47.136113 run-command.c:334       trace: run_command: 'git-co' 'master'

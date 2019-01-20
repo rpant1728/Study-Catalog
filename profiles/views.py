@@ -273,12 +273,11 @@ def create_folder(request):
 	if folder.title == '':
 		folder.title = "New Folder"
 	folder.course = Course.objects.get(id=request.POST['course_id'])
-	if not 'folder_id' in request.POST:
+	if 'folder_id' in request.POST:
+		folder.parent_folder = Folder.objects.get(id=request.POST['folder_id'])
+	else:
 		folder.root = True
 	folder.save()
-	if 'folder_id' in request.POST:
-		curr_folder = Folder.objects.get(id=request.POST['folder_id'])
-		curr_folder.folders.add(folder)
 	return HttpResponse("success")
 
 def folders(request):
@@ -298,7 +297,7 @@ def folder_detail(request, pk, pk1):
 	profile = Profile.objects.filter(user=request.user).first()
 	course = Course.objects.get(id=pk)
 	folder = Folder.objects.get(id=pk1)
-	folders = folder.folders.all()
+	folders = folder.subfolders.all()
 	resources = Resource.objects.filter(folder__id=folder.id, approved=True)
 	template_data = {'folders' : folders, 'resources' : resources, 'course': course, 'root': False, 'folder': folder, 'form': form}
 	if profile.admin:
