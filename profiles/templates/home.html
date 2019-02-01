@@ -8,37 +8,20 @@
         <div class="row">
             <div class="col-md-3">
                 {% if user.is_authenticated %}
-                    {% if user.profile.all.count != 0 %}
-                        {% for profile in user.profile.all %}
-                            <div class="card">
-                                <div class="card-body">
-                                    <img class="img-responsive user-photo" height=150px width=150px src="{{profile.profile_picture.url}}">  
-                                    <div class="h5">{{ profile.username }}</div>
-                                    <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
-                                    <div class="h7">{{ profile.description }}</div>
-                                    <a href="{% url 'profile-detail' user.id %}">My profile</a>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="h6 text-muted">Followers</div>
-                                        <div class="h5">5.2342</div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="h6 text-muted">Following</div>
-                                        <div class="h5">6758</div>
-                                    </li>
-                                    <li class="list-group-item">Vestibulum at eros</li>
-                                </ul>
-                            </div>   
-                        {% endfor %}
-                    {% else %}
-                        <a class="lead" href="{% url 'edit-profile' %}">Create Profile</a>
-                    {% endif %}
+                    <div class="card">
+                        <div class="card-body">
+                            <img class="img-responsive user-photo" height=150px width=150px src="{{user.profile.profile_picture.url}}">  
+                            <div class="h5">{{ user.profile.username }}</div>
+                            <div class="h7 text-muted">{{ user.profile.first_name }} {{ user.profile.last_name }}</div>
+                            <div class="h7">{{ user.profile.description }}</div>
+                            <a href="{% url 'profile-detail' user.id %}">My profile</a>
+                        </div>
+                    </div>   
                 {% endif %}
             </div>
 
             <div class="col-md-6 gedf-main">
-                {% if user.is_authenticated and not profile %}
+                {% if user.is_authenticated %}
                     <div class="card gedf-card">
                         <div class="card-header">
                             <ul class="nav nav-tabs">
@@ -65,12 +48,6 @@
                                 </div>
                                 <div id="files-tab" class="tab-pane fade">
                                     <br>
-                                    <div class="col-sm-6">
-                                        <a id="create-course" href="#">Create Course</a>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <a id="request-admin" href="#">Admin Request</a> 
-                                    </div>
                                     <div id="course-form">                                   
                                         <form action="{% url 'create-course' %}" method="POST" enctype="multipart/form-data">
                                             {% csrf_token %}
@@ -97,18 +74,6 @@
                                                 </div>
                                             </div>
                                         </form>
-                                    </div>
-                                    <div id="admin-request">
-                                        {% for profile in user.profile.all %}
-                                            {% if profile.admin %}
-                                                <p>You are already an admin</p>
-                                            {% elif profile.admin_request %}
-                                                <p>You have already requested to be an admin</p>
-                                            {% else %}
-                                                <p id="text"></p>
-                                                <button class="admin-req" id="admin-{{ profile.user.id }}">Admin Request</a>
-                                            {% endif %}
-                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>

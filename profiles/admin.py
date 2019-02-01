@@ -7,3 +7,4 @@ admin.site.register(Profile)
 admin.site.register(Course)
 admin.site.register(Resource)
 admin.site.register(Folder)
+

@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.utils import timezone
 from profiles.models import Post, Comment, Profile, Resource, Course, Folder
@@ -10,8 +10,22 @@ from django.db.models import Q
 from django.db import connection
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
+DEPARTMENTS = (
+        (0, 'CSE', 'Computer Science and Engineering'),
+        (1, 'CE', 'Chemical Engineering'),
+        (2, 'BT', 'Bio-Technology'),
+        (3, 'CST', 'Chemical Science & Technology'),
+        (4, 'CE', 'Civil Engineering'),
+        (5, 'ECE', 'Electronics & Communication Engineering'),
+        (6, 'EEE', 'Electronics & Electrical Engineering'),
+        (7, 'EP', 'Engineering Physics'),
+        (8, 'ME', 'Mechanical Engineering'),
+        (9, 'MNC', 'Mathematics & Computing'),
+        (10, 'OT', 'Other')
+    )
+
 def home(request):
-	profile = Profile.objects.filter(user_id=request.user.id)
+
 	user = request.user
 	if not request.user.is_authenticated:
 		all_posts = Post.objects.all()
@@ -19,8 +33,12 @@ def home(request):
 		course_form = CourseForm()
 		template_data = {'posts' : all_posts, 'courses': courses, 'course_form': course_form}
 		return render(request, 'home.html', template_data)
-	if profile.count() == 0:
+	
+	try:
+		profile = Profile.objects.get(user=request.user)
+	except Profile.DoesNotExist:
 		return HttpResponseRedirect(reverse("edit-profile"))
+	
 	all_posts = Post.objects.all()
 	courses = Course.objects.all()
 	course_form = CourseForm()
@@ -169,34 +187,44 @@ def create_course(request):
 		if form.is_valid():
 			new_course = form.save()
 			profile = Profile.objects.filter(user=request.user).first()	
-			profile.admin_of_courses.add(new_course)
+			# profile.admin_of_courses.add(new_course)
 			profile.save()
 	return HttpResponseRedirect(reverse("home"))
 
 def catalog(request):
+
+	if not request.user.is_authenticated:
+		all_posts = Post.objects.all()
+		courses = Course.objects.all()
+		course_form = CourseForm()
+		template_data = {'posts' : all_posts, 'courses': courses, 'course_form': course_form}
+		return render(request, 'home.html', template_data)
+	
+	try:
+		profile = Profile.objects.get(user=request.user)
+	except Profile.DoesNotExist:
+		return HttpResponseRedirect(reverse("edit-profile"))
+	
+
+
 	profile = Profile.objects.filter(user=request.user).first()
-	courses = Course.objects.filter(approved=True)
 	template_data = dict()
-	template_data['courses'] = courses
+	template_data['departments'] = DEPARTMENTS
 	all_course_requests = Course.objects.filter(approved=False)
 	all_resource_requests = Resource.objects.filter(approved=False)
-	all_admin_requests = Profile.objects.filter(admin_request=True)
+	template_data['course_requests'] = all_course_requests
+	template_data['resource_requests'] = all_resource_requests
+	
 	if profile.admin:
-		template_data['is_admin'] = True
 		template_data['all_admin'] = True
-		template_data['course_requests'] = all_course_requests
-		template_data['resource_requests'] = all_resource_requests
-		template_data['admin_requests'] = all_admin_requests
-		return render(request, 'catalog.html', template_data)
-	if profile.admin_of_courses.all().count() > 0:
-		template_data['is_admin'] = True
-		resource_requests = []
-		for resource in all_resource_requests:
-			for course in profile.admin_of_courses.all():
-				if resource.course == course:
-					resource_requests.append(resource)	
-		template_data['resource_requests'] = resource_requests
-		return render(request, 'catalog.html', template_data)
+	else:
+		template_data['all_admin'] = False
+
+	if profile.admin_dept:
+		template_data['dept_admin'] = True
+	else:
+		template_data['dept_admin'] = False
+
 	return render(request, 'catalog.html', template_data)
 
 def approve_course(request):
@@ -305,8 +333,11 @@ def folder_detail(request, pk, pk1):
 		template_data['all_admin'] = True
 	else:
 		template_data['all_admin'] = False
+	if profile.admin_dept:
+		template_data['dept_admin'] = True
+	else:
+		template_data['dept_admin'] = False
 	return render(request, 'filesystem.html', template_data) 
-
 
 def SearchListView(request):
 	qs = Post.objects.all()
@@ -361,3 +392,9 @@ def rename_folder(request):
 		folder.title = request.POST['foldername']
 		folder.save()
 	return HttpResponseRedirect(reverse("catalog"))
+
+def department_courses(request,pk):
+	courses = Course.objects.filter(approved=True , department = DEPARTMENTS[int(pk)][1])
+	template_data = dict()
+	template_data[ 'courses' ] = courses
+	return render(request, 'courses.html', template_data)

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{% static 'js/catalog.js' %}"></script>
+    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+    Courses<br>
+    <div class="course">
+    {% for course in courses %}
+        <a href="{% url 'course-detail' course.id %}">{{course.name}}</a><br>
+    {% endfor %}
+    </div>
+
+{% endblock %}

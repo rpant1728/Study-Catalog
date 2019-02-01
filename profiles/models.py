@@ -66,10 +66,9 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to='images/profile_pictures',
                                         default="images/profile_pictures/default.png")
     city = models.CharField(max_length=255)
-    user = models.ForeignKey(User, related_name='profile', on_delete=models.CASCADE, null=True)
-    admin_of_courses = models.ManyToManyField(Course, related_name='courses')
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     admin = models.BooleanField(default=False)
-    admin_request = models.BooleanField(default=False)
+    admin_dept = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('profile-detail', args=[str(self.id)])

@@ -6,92 +6,80 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="{% static 'js/catalog.js' %}"></script>
-    {% if all_admin %}
+    {% if all_admin or dept_admin %}
         <div class="course-requests">
-        Course Requests
+            Course Requests
+            <br>
             {% for course in course_requests %}
-            <hr>
-            <div class="item row">   
-                <div class="col-sm-6">
-                    <div class="col-sm-3">
-                         <div id="course-{{course.id}}">
-                            <a id="name-{{course.id}}"><a id="course_name1">{{ course.name }}</a></a>
-                            <a class="approve-course" id="approve-{{course.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
-                            <!-- <button class="approve-course" id="approve-{{course.id}}">Approve</button> -->
-                            <a class="reject-course" id="reject-{{course.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
-                            <!-- <button class="reject-course" id="reject-{{course.id}}">Reject</button> -->
+                {% if course.department == user.profile.department  or all_admin %}
+                <hr>
+                <div class="item row">   
+                    <div class="col-sm-6">
+                        <div class="col-sm-3">
+                            <div id="course-{{course.id}}">
+                                <a id="name-{{course.id}}"><a id="course_name1">{{ course.name }}</a></a>
+                                <a class="approve-course" id="approve-{{course.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                                <!-- <button class="approve-course" id="approve-{{course.id}}">Approve</button> -->
+                                <a class="reject-course" id="reject-{{course.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                <!-- <button class="reject-course" id="reject-{{course.id}}">Reject</button> -->
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            Department: <a>{{ course.department }}</a>
+                        </div>
+                        <div class="col-sm-3">
+                            Degree: <a>{{ course.degree }}</a>
+                        </div>
+                        <div class="col-sm-3">
+                            Course Code: <a>{{ course.code }}</a>
+                        </div>
+                        <div class="col-sm-3">
+                            Created By: <a href="{% url 'profile-detail' course.admin.id %}">{{ course.admin.username }}</a>
                         </div>
                     </div>
-                    <div class="col-sm-3">
-                        Department: <a>{{ course.department }}</a>
-                    </div>
-                    <div class="col-sm-3">
-                        Degree: <a>{{ course.degree }}</a>
-                    </div>
-                    <div class="col-sm-3">
-                        Course Code: <a>{{ course.code }}</a>
-                    </div>
-                    <div class="col-sm-3">
-                        Created By: <a href="{% url 'profile-detail' course.admin.id %}">{{ course.admin.username }}</a>
-                    </div>
                 </div>
-            </div>
-            <br>
+                <br>
+                {% endif %}
             {% endfor %}
         </div>
         <hr style="height:1px;border:none;color:#333;background-color:#333;" />
         <div class="resource-requests">
             Resource Requests
             <br>
-                {% for resource in resource_requests %}
-                    {% if resource.course.admin.username == user.username or all_admin %}
-                    <hr>
-                        <div class="item row">   
-                            <div class="col-sm-6">
-                                <div class="col-sm-3">
-                                    <div id="resource-{{resource.id}}">
-                                        <a href="{{resource.file.url}}" id="name-{{resource.id}}"><a id="resource_title">{{ resource.title }}</a></a>
-                                        <a class="approve-resource" id="approve-{{resource.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
-                                        <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
-                                        <a class="reject-resource" id="reject-{{resource.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
-                                        <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    Course: <a href="{% url 'course-detail' resource.course.id %}">{{ resource.course }}</a>
-                                </div>
-                                <div class="col-sm-3">
-                                    Folder: <a href="{% url 'folder-detail' resource.course.id resource.folder.id %}">{{ resource.folder.title }}</a>
-                                </div>
-                                <div class="col-sm-3">
-                                    Uploaded By: <a href="{% url 'profile-detail' resource.user.id %}">{{ resource.user.username }}</a>
+            {% for resource in resource_requests %}
+                {% if resource.course.department == user.profile.department or all_admin %}
+                <hr>
+                    <div class="item row">   
+                        <div class="col-sm-6">
+                            <div class="col-sm-3">
+                                <div id="resource-{{resource.id}}">
+                                    <a href="{{resource.file.url}}" id="name-{{resource.id}}"><a id="resource_title">{{ resource.title }}</a></a>
+                                    <a class="approve-resource" id="approve-{{resource.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
+                                    <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
+                                    <a class="reject-resource" id="reject-{{resource.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
                                 </div>
                             </div>
+                            <div class="col-sm-3">
+                                Course: <a href="{% url 'course-detail' resource.course.id %}">{{ resource.course }}</a>
+                            </div>
+                            <div class="col-sm-3">
+                                Folder: <a href="{% url 'folder-detail' resource.course.id resource.folder.id %}">{{ resource.folder.title }}</a>
+                            </div>
+                            <div class="col-sm-3">
+                                Uploaded By: <a href="{% url 'profile-detail' resource.user.id %}">{{ resource.user.username }}</a>
+                            </div>
                         </div>
-                    {% endif %}
-                    
-                {% endfor %}
-        </div>
-        <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-        <div class="admin-requests">
-            Admin Requests
-                {% for profile in admin_requests %}
-                    <div id="admin-{{profile.user.id}}">
-                        <p id="name-{{profile.user.id}}">{{ profile.first_name }}</p>
-                        <a class="approve-admin" id="approve-{{profile.user.id}}" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></a>
-                        <!-- <button class="approve-resource" id="approve-{{resource.id}}">Approve</button> -->
-                        <a class="reject-admin" id="reject-{{profile.user.id}}" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
-                        <!-- <button class="reject-resource" id="reject-{{resource.id}}">Reject</button> -->
-                        <br>
                     </div>
-                {% endfor %}
+                {% endif %}
+            {% endfor %}
         </div>
     {% endif %}
     <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-    Courses<br>
+    Departments<br>
     <div class="course">
-    {% for course in courses %}
-        <a href="{% url 'course-detail' course.id %}">{{course.name}}</a><br>
+    {% for dept in departments %}
+        <a href="{% url 'department-courses' dept.0 %}" >{{ dept.1 }} - {{  dept.2 }}</a><br>
     {% endfor %}
     </div>
 

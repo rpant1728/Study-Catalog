@@ -68,12 +68,14 @@
                 </div>
                 <div class="col-sm-6">
                     {{folder.created_on}}
-                    {% if user.username == folder.course.admin.username or all_admin %}
-                        <a href="{% url 'delete-folder' folder.id %}">
-                        <i class="fa fa-trash" aria-hidden="true">
-                        </i>
-                        </a>
-                        <a href="#" class="rename_folder" id="rename_folder-{{folder.id}}" >Rename</a>
+                    {% if all_admin or dept_admin %}
+                        {% if folder.course.department == user.department  or all_admin %}
+                            <a href="{% url 'delete-folder' folder.id %}">
+                            <i class="fa fa-trash" aria-hidden="true">
+                            </i>
+                            </a>
+                            <a href="#" class="rename_folder" id="rename_folder-{{folder.id}}" >Rename</a>
+                        {% endif %}
                     {% endif %}
                 </div>  
             </div>
@@ -87,12 +89,14 @@
                 </div> 
                 <div class="col-sm-6">
                     {{resource.uploaded_on}}
-                    {% if user.username == resource.course.admin.username or all_admin %}
-                        <a href="{% url 'delete-resource' resource.id %}">
-                        <i class="fa fa-trash" aria-hidden="true">
-                        </i>
-                        </a>
-                        <a href="#" class="rename_resource" id="rename_resource-{{resource.id}}" >Rename</a>
+                    {% if all_admin or dept_admin %}
+                        {% if resource.course.department == user.department  or all_admin %}
+                            <a href="{% url 'delete-resource' resource.id %}">
+                            <i class="fa fa-trash" aria-hidden="true">
+                            </i>
+                            </a>
+                            <a href="#" class="rename_resource" id="rename_resource-{{resource.id}}" >Rename</a>
+                        {% endif %}
                     {% endif %}
                 </div> 
             </div>

@@ -39,21 +39,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex justify-content-between align-items-center">   
                                 <div class="mr-2">
-                                    {% if post.author.profile.all.count == 0 %}
-                                        <img class="rounded-circle" width="45" src="{% static 'images/default.png' %}"/>
-                                    {% else %}
-                                        {% for profile in post.author.profile.all %}
-                                            <img class="rounded-circle" width="45" src="{{profile.profile_picture.url}}">     
-                                        {% endfor %}
-                                    {% endif %}
+                                    <img class="rounded-circle" width="45" src="{{post.author.profile.profile_picture.url}}">     
                                 </div>
                                 <div class="ml-2">
                                     <div class="h5 m-0">{{ post.author.username }}</div>
-                                    {% if post.author.profile.all.count != 0 %}
-                                        {% for profile in post.author.profile.all %}
-                                            <div class="h7 text-muted">{{ profile.first_name }} {{ profile.last_name }}</div>
-                                        {% endfor %}
-                                    {% endif %}
+                                    <div class="h7 text-muted">{{ post.author.profile.first_name }} {{ post.author.profile.last_name }}</div>
                                 </div>
                             </div>
                             <div>
@@ -111,13 +101,7 @@
                             <div class="row">
                                 <div class="col-sm-auto">
                                     <div class="thumbnail">
-                                        {% if comment.author.profile.all.count == 0 %}
-                                            <img class="img-responsive user-photo" height="75px" width="75px" src="{% static 'images/default.png' %}"/>
-                                        {% else %}
-                                            {% for profile in comment.author.profile.all %}
-                                                <img class="img-responsive user-photo" src="{{profile.profile_picture.url}}">     
-                                            {% endfor %}
-                                        {% endif %}
+                                        <img class="img-responsive user-photo" src="{{comment.author.profile.profile_picture.url}}">     
                                     </div> 
                                 </div> 
                                 <div class="col">
@@ -125,11 +109,7 @@
                                         <div class="card-header">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="panel-heading">
-                                                    {% if comment.author.profile.all.count != 0 %}
-                                                        <a href="{% url 'profile-detail' comment.author.id %}"><strong>{{comment.author}}</strong></a> <span class="text-muted">commented on {{comment.created_on}}</span>
-                                                    {% else %}
-                                                        <strong>{{comment.author}}</strong> <span class="text-muted">commented on {{comment.created_on}}</span>
-                                                    {% endif %}
+                                                    <a href="{% url 'profile-detail' comment.author.id %}"><strong>{{comment.author}}</strong></a> <span class="text-muted">commented on {{comment.created_on}}</span>
                                                 </div>
                                                 <div>
                                                     <div class="dropdown">
